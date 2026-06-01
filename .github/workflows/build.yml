@@ -1,0 +1,46 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repoyu al
+        uses: actions/checkout@v4
+
+      - name: Projeyi zip'ten ac
+        run: unzip -q TakipApp.zip
+
+      - name: JDK 17 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Debug APK derle
+        working-directory: TakipApp
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: APK artifact yukle
+        uses: actions/upload-artifact@v4
+        with:
+          name: takip-debug-apk
+          path: TakipApp/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Release yayinla
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Son Derleme (APK)
+          body: "Telefondan kur: app-debug.apk dosyasina dokun."
+          files: TakipApp/app/build/outputs/apk/debug/app-debug.apk
