@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.layout.Arrangement
@@ -44,8 +44,9 @@ class MainActivity : FragmentActivity() {
     private val requestNotifPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { /* sonucu yok say */ }
 
-    // Parmak izi (varsa) + PIN/desen yedegi
-    private val authenticators = BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+    // WEAK + DEVICE_CREDENTIAL tum API seviyelerinde desteklenir.
+    // (STRONG + DEVICE_CREDENTIAL Android 9/10'da desteklenmez ve cokme yapar.)
+    private val authenticators = BIOMETRIC_WEAK or DEVICE_CREDENTIAL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,13 +57,17 @@ class MainActivity : FragmentActivity() {
 
         val app = application as TakipApplication
 
-        // Cihazda parmak izi VEYA PIN/desen varsa kilitle; hicbiri yoksa kilitsiz ac
-        val lockNeeded = BiometricManager.from(this)
-            .canAuthenticate(authenticators) == BiometricManager.BIOMETRIC_SUCCESS
+        // Cihazda parmak izi VEYA PIN/desen varsa kilitle; hata olursa kilitleme
+        val canLock = try {
+            BiometricManager.from(this).canAuthenticate(authenticators) ==
+                BiometricManager.BIOMETRIC_SUCCESS
+        } catch (t: Throwable) {
+            false
+        }
 
         setContent {
             TakipTheme {
-                var unlocked by rememberSaveable { mutableStateOf(!lockNeeded) }
+                var unlocked by rememberSaveable { mutableStateOf(!canLock) }
 
                 LaunchedEffect(Unit) {
                     if (!unlocked) showAuthPrompt { unlocked = true }
@@ -86,22 +91,27 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun showAuthPrompt(onSuccess: () -> Unit) {
-        val executor = ContextCompat.getMainExecutor(this)
-        val prompt = BiometricPrompt(
-            this,
-            executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    onSuccess()
+        try {
+            val executor = ContextCompat.getMainExecutor(this)
+            val prompt = BiometricPrompt(
+                this,
+                executor,
+                object : BiometricPrompt.AuthenticationCallback() {
+                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                        onSuccess()
+                    }
                 }
-            }
-        )
-        val info = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Takip kilitli")
-            .setSubtitle("Devam etmek için kimliğini doğrula")
-            .setAllowedAuthenticators(authenticators)
-            .build()
-        prompt.authenticate(info)
+            )
+            val info = BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Takip kilitli")
+                .setSubtitle("Devam etmek için kimliğini doğrula")
+                .setAllowedAuthenticators(authenticators)
+                .build()
+            prompt.authenticate(info)
+        } catch (t: Throwable) {
+            // Biyometrik baslatilamazsa kullaniciyi disarida birakma: iceri al
+            onSuccess()
+        }
     }
 }
 
