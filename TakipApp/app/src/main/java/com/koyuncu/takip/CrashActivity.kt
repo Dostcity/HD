@@ -20,14 +20,14 @@ class CrashActivity : Activity() {
 
         val trace = CrashStore.get(this) ?: "Hata kaydi bulunamadi."
 
-        val text = TextView(this).apply {
+        val messageView = TextView(this).apply {
             text = "UYGULAMA COKTU\n\nLutfen bu ekranin goruntusunu alip gonder:\n\n$trace"
             setTextColor(Color.WHITE)
             setPadding(32, 48, 32, 48)
             textSize = 12f
             setTextIsSelectable(true)
         }
-        val scroll = ScrollView(this).apply { addView(text) }
+        val scroll = ScrollView(this).apply { addView(messageView) }
 
         val button = Button(this).apply {
             text = "Temizle ve uygulamayi ac"
