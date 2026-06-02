@@ -27,25 +27,27 @@ object OnDeviceScraper {
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
             "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
 
+    private data class Dl(val status: Int, val body: String?, val error: String?)
+
     suspend fun scrape(url: String): ScrapeResult = withContext(Dispatchers.IO) {
         if (url.isBlank()) return@withContext ScrapeResult(null, "-", 0, 0, false, "link yok")
         val market = marketName(url)
-        val (status, html) = download(url)
-        if (html == null) {
-            val n = if (status < 0) "ag hatasi" else "HTTP $status"
-            return@withContext ScrapeResult(null, market, status, 0, false, n)
+        val dl = download(url)
+        if (dl.body == null) {
+            val n = if (dl.status < 0) "ag hatasi: ${dl.error ?: "?"}" else "HTTP ${dl.status}"
+            return@withContext ScrapeResult(null, market, dl.status, 0, false, n)
         }
-        if (looksBlocked(status, html)) {
-            return@withContext ScrapeResult(null, market, status, html.length, true, "engellendi (HTTP $status)")
+        if (looksBlocked(dl.status, dl.body)) {
+            return@withContext ScrapeResult(null, market, dl.status, dl.body.length, true, "engellendi (HTTP ${dl.status})")
         }
-        val price = extractPrice(html)
+        val price = extractPrice(dl.body)
         if (price == null) {
             return@withContext ScrapeResult(
-                null, market, status, html.length, false,
-                "HTTP $status, fiyat bulunamadi (${html.length} bayt)"
+                null, market, dl.status, dl.body.length, false,
+                "HTTP ${dl.status}, fiyat bulunamadi (${dl.body.length} bayt)"
             )
         }
-        ScrapeResult(price, market, status, html.length, false, "OK %,.0f TL".format(price))
+        ScrapeResult(price, market, dl.status, dl.body.length, false, "OK %,.0f TL".format(price))
     }
 
     fun marketName(url: String): String {
@@ -62,13 +64,14 @@ object OnDeviceScraper {
         }
     }
 
-    private fun download(urlStr: String): Pair<Int, String?> {
+    private fun download(urlStr: String): Dl {
         var conn: HttpURLConnection? = null
         return try {
             conn = (URL(urlStr).openConnection() as HttpURLConnection).apply {
-                connectTimeout = 20000
-                readTimeout = 20000
+                connectTimeout = 25000
+                readTimeout = 25000
                 instanceFollowRedirects = true
+                useCaches = false
                 requestMethod = "GET"
                 setRequestProperty("User-Agent", UA)
                 setRequestProperty(
@@ -80,9 +83,10 @@ object OnDeviceScraper {
             val code = conn.responseCode
             val stream = if (code in 200..299) conn.inputStream else conn.errorStream
             val body = stream?.bufferedReader()?.use { it.readText() }
-            Pair(code, body)
+            Dl(code, body, null)
         } catch (t: Throwable) {
-            Pair(-1, null)
+            val msg = (t.javaClass.simpleName + ": " + (t.message ?: "")).take(140)
+            Dl(-1, null, msg)
         } finally {
             try { conn?.disconnect() } catch (_: Throwable) {}
         }
