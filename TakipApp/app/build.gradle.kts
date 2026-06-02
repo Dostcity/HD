@@ -13,8 +13,8 @@ android {
         applicationId = "com.koyuncu.takip"
         minSdk = 26
         targetSdk = 34
-        versionCode = 5
-        versionName = "0.3.0"
+        versionCode = 6
+        versionName = "0.4.0"
         vectorDrawables { useSupportLibrary = true }
     }
 

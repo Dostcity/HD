@@ -1,5 +1,11 @@
 package com.koyuncu.takip.ui.find
 
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,12 +25,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import com.koyuncu.takip.find.ClapService
 import com.koyuncu.takip.find.FindAlarm
 
 @Composable
 fun FindScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    var running by remember { mutableStateOf(FindAlarm.isRunning()) }
+    var listening by remember { mutableStateOf(ClapService.isListening) }
+    var alarmRunning by remember { mutableStateOf(FindAlarm.isRunning()) }
+
+    val micPermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            startClapService(context)
+            listening = true
+        }
+    }
 
     Column(
         modifier = modifier
@@ -34,27 +52,66 @@ fun FindScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         Text("Telefonu Bul", style = MaterialTheme.typography.headlineSmall)
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(16.dp))
+
         Text(
-            "Alarm: yüksek ses + flash + titreşim. Telefon sessizde olsa bile çalar. " +
-                "(Çırpınca otomatik çalması bir sonraki adımda eklenecek.)",
+            "Çırpınca bul: telefonu bulmak için 2 kez çırp. Arka planda dinler " +
+                "(kalıcı bildirim görünür, pili biraz harcar).",
             textAlign = TextAlign.Center
         )
-        Spacer(Modifier.height(28.dp))
-        if (!running) {
+        Spacer(Modifier.height(12.dp))
+        if (!listening) {
+            Button(onClick = {
+                val granted = ContextCompat.checkSelfPermission(
+                    context, Manifest.permission.RECORD_AUDIO
+                ) == PackageManager.PERMISSION_GRANTED
+                if (granted) {
+                    startClapService(context)
+                    listening = true
+                } else {
+                    micPermission.launch(Manifest.permission.RECORD_AUDIO)
+                }
+            }) {
+                Text("👏  Çırpınca bulmayı başlat")
+            }
+        } else {
+            Button(onClick = {
+                stopClapService(context)
+                listening = false
+            }) {
+                Text("⏹  Dinlemeyi durdur")
+            }
+        }
+
+        Spacer(Modifier.height(36.dp))
+
+        Text(
+            "Alarmı doğrudan test et (ses + flash + titreşim):",
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(12.dp))
+        if (!alarmRunning) {
             Button(onClick = {
                 FindAlarm.start(context)
-                running = true
+                alarmRunning = true
             }) {
                 Text("📢  Alarmı Çal (test)")
             }
         } else {
             Button(onClick = {
                 FindAlarm.stop()
-                running = false
+                alarmRunning = false
             }) {
-                Text("⏹  Durdur")
+                Text("⏹  Alarmı Durdur")
             }
         }
     }
+}
+
+private fun startClapService(context: Context) {
+    ContextCompat.startForegroundService(context, Intent(context, ClapService::class.java))
+}
+
+private fun stopClapService(context: Context) {
+    context.stopService(Intent(context, ClapService::class.java))
 }

@@ -4,6 +4,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
 
     <application
         android:name=".TakipApplication"
@@ -27,5 +30,10 @@
             android:name=".CrashActivity"
             android:exported="false"
             android:theme="@style/Theme.TakipApp" />
+
+        <service
+            android:name=".find.ClapService"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
     </application>
 </manifest>
