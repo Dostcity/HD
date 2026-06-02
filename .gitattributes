@@ -1,0 +1,15 @@
+# Satir sonlarini tutarli tut - CI Linux uzerinde derliyor
+* text=auto
+
+# Shell scriptleri Linux CI calistirir: her zaman LF olmali
+gradlew text eol=lf
+*.sh text eol=lf
+
+# Windows batch dosyalari CRLF
+*.bat text eol=crlf
+
+# Binary dosyalar (satir sonu donusumu yapma)
+*.jar binary
+*.png binary
+*.jpg binary
+*.webp binary

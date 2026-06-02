@@ -15,9 +15,6 @@ jobs:
       - name: Repoyu al
         uses: actions/checkout@v4
 
-      - name: Projeyi zip'ten ac
-        run: unzip -q TakipApp.zip
-
       - name: JDK 17 kur
         uses: actions/setup-java@v4
         with:
