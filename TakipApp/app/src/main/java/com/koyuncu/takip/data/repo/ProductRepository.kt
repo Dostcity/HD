@@ -7,12 +7,13 @@ import com.koyuncu.takip.data.price.MarketPrice
 import com.koyuncu.takip.data.price.OnDeviceScraper
 import kotlinx.coroutines.flow.Flow
 
-/** Bir fiyat kontrolünün sonucu: düşüş olduysa bildirim için kullanılır. */
+/** Bir fiyat kontrolünün sonucu (note: ekranda gösterilecek teşhis). */
 data class PriceCheckResult(
     val product: TrackedProductEntity,
-    val lowest: MarketPrice,
+    val lowest: MarketPrice?,
     val previousLowest: Double?,
-    val dropped: Boolean
+    val dropped: Boolean,
+    val note: String
 )
 
 class ProductRepository(private val dao: ProductDao) {
@@ -34,39 +35,37 @@ class ProductRepository(private val dao: ProductDao) {
 
     suspend fun delete(product: TrackedProductEntity) = dao.delete(product)
 
-    /** Tek bir ürünü (linkinden) kontrol eder, geçmişe yazar, sonucu döner. */
-    suspend fun checkProduct(product: TrackedProductEntity): PriceCheckResult? {
-        val prices = mutableListOf<MarketPrice>()
-        if (product.url.isNotBlank()) {
-            OnDeviceScraper.scrape(product.url)?.let { prices.add(it) }
+    /** Ürünü linkinden kontrol eder; her durumda teşhisli sonuç döner. */
+    suspend fun checkProduct(product: TrackedProductEntity): PriceCheckResult {
+        val res = OnDeviceScraper.scrape(product.url)
+        if (res.price == null) {
+            return PriceCheckResult(product, null, product.lastLowestPrice, false, res.note)
         }
-        val lowest = prices.minByOrNull { it.price } ?: return null
 
-        prices.forEach {
-            dao.insertHistory(
-                PriceHistoryEntity(productId = product.id, market = it.market, price = it.price)
-            )
-        }
+        val mp = MarketPrice(market = res.market, price = res.price, url = product.url, currency = "TL")
+        dao.insertHistory(
+            PriceHistoryEntity(productId = product.id, market = mp.market, price = mp.price)
+        )
 
         val previous = product.lastLowestPrice
         val target = product.targetPrice
         val dropped = when {
-            target != null -> lowest.price <= target
-            previous != null -> lowest.price < previous
+            target != null -> mp.price <= target
+            previous != null -> mp.price < previous
             else -> false // ilk ölçüm: referans alınır, bildirim yok
         }
 
         dao.update(
             product.copy(
-                lastLowestPrice = lowest.price,
-                lastLowestMarket = lowest.market,
+                lastLowestPrice = mp.price,
+                lastLowestMarket = mp.market,
                 lastCheckedAt = System.currentTimeMillis()
             )
         )
 
-        return PriceCheckResult(product, lowest, previous, dropped)
+        return PriceCheckResult(product, mp, previous, dropped, res.note)
     }
 
     suspend fun checkAll(): List<PriceCheckResult> =
-        dao.getAll().mapNotNull { checkProduct(it) }
+        dao.getAll().map { checkProduct(it) }
 }

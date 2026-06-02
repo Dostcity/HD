@@ -19,6 +19,10 @@ class TrackingViewModel(private val repo: ProductRepository) : ViewModel() {
     private val _checking = MutableStateFlow(false)
     val checking: StateFlow<Boolean> = _checking.asStateFlow()
 
+    /** Son "Kontrol et" teşhis raporu (her ürün için durum). */
+    private val _report = MutableStateFlow<String?>(null)
+    val report: StateFlow<String?> = _report.asStateFlow()
+
     fun add(name: String, url: String, targetPrice: Double?) =
         viewModelScope.launch {
             if (name.isNotBlank()) repo.add(name, url, targetPrice)
@@ -29,6 +33,17 @@ class TrackingViewModel(private val repo: ProductRepository) : ViewModel() {
 
     fun checkNow() = viewModelScope.launch {
         _checking.value = true
-        try { repo.checkAll() } finally { _checking.value = false }
+        try {
+            val results = repo.checkAll()
+            _report.value = if (results.isEmpty()) {
+                "Takip edilen ürün yok."
+            } else {
+                results.joinToString("\n") { "• ${it.product.name}: ${it.note}" }
+            }
+        } catch (t: Throwable) {
+            _report.value = "Hata: ${t.message}"
+        } finally {
+            _checking.value = false
+        }
     }
 }

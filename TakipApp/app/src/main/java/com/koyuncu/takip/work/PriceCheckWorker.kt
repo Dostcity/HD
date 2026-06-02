@@ -15,13 +15,13 @@ class PriceCheckWorker(
         val app = applicationContext as TakipApplication
         return try {
             val results = app.productRepository.checkAll()
-            results.filter { it.dropped }.forEachIndexed { index, r ->
+            results.filter { it.dropped && it.lowest != null }.forEachIndexed { index, r ->
                 Notifier.priceDrop(
                     context = applicationContext,
                     id = (r.product.id.toInt() * 100 + index),
                     productName = r.product.name,
-                    market = r.lowest.market,
-                    price = r.lowest.price
+                    market = r.lowest!!.market,
+                    price = r.lowest!!.price
                 )
             }
             Result.success()

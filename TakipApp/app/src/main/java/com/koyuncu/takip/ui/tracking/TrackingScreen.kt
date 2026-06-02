@@ -36,6 +36,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 fun TrackingScreen(vm: TrackingViewModel, modifier: Modifier = Modifier) {
     val products by vm.products.collectAsState()
     val checking by vm.checking.collectAsState()
+    val report by vm.report.collectAsState()
 
     var name by remember { mutableStateOf("") }
     var url by remember { mutableStateOf("") }
@@ -53,7 +54,7 @@ fun TrackingScreen(vm: TrackingViewModel, modifier: Modifier = Modifier) {
         OutlinedTextField(
             value = url,
             onValueChange = { url = it },
-            label = { Text("Ürün linki (Trendyol / Amazon / Akakçe)") },
+            label = { Text("Ürün linki (Trendyol / Amazon / Akakçe) — zorunlu") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
         )
@@ -87,6 +88,14 @@ fun TrackingScreen(vm: TrackingViewModel, modifier: Modifier = Modifier) {
             }
         }
 
+        report?.let {
+            Text(
+                it,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            )
+        }
+
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(top = 12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -99,9 +108,12 @@ fun TrackingScreen(vm: TrackingViewModel, modifier: Modifier = Modifier) {
                     ) {
                         Column(Modifier.weight(1f)) {
                             Text(p.name, style = MaterialTheme.typography.titleMedium)
-                            val priceLine = p.lastLowestPrice?.let {
-                                "En düşük: %,.0f TL — %s".format(it, p.lastLowestMarket ?: "-")
-                            } ?: "Henüz kontrol edilmedi"
+                            val priceLine = when {
+                                p.url.isBlank() -> "⚠️ Link yok — sil ve linkle yeniden ekle"
+                                p.lastLowestPrice != null ->
+                                    "En düşük: %,.0f TL — %s".format(p.lastLowestPrice, p.lastLowestMarket ?: "-")
+                                else -> "Henüz kontrol edilmedi"
+                            }
                             Text(priceLine, style = MaterialTheme.typography.bodyMedium)
                             p.targetPrice?.let {
                                 Text(
