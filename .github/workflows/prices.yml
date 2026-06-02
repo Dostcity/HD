@@ -1,0 +1,36 @@
+name: Fiyat Tara
+
+on:
+  schedule:
+    - cron: '0 6,12,18 * * *'   # her gun 06:00, 12:00, 18:00 UTC (gunde 3 kez)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repoyu al
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fiyatlari tara
+        run: python scraper/scrape.py
+
+      - name: Sonuclari commit'le
+        run: |
+          git config user.name "fiyat-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add prices.json scraper/last_run.json
+          if git diff --staged --quiet; then
+            echo "Degisiklik yok"
+          else
+            git commit -m "Fiyat guncelleme"
+            git push
+          fi
