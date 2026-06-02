@@ -4,7 +4,7 @@ import com.koyuncu.takip.data.local.PriceHistoryEntity
 import com.koyuncu.takip.data.local.ProductDao
 import com.koyuncu.takip.data.local.TrackedProductEntity
 import com.koyuncu.takip.data.price.MarketPrice
-import com.koyuncu.takip.data.price.PriceSource
+import com.koyuncu.takip.data.price.OnDeviceScraper
 import kotlinx.coroutines.flow.Flow
 
 /** Bir fiyat kontrolünün sonucu: düşüş olduysa bildirim için kullanılır. */
@@ -15,19 +15,18 @@ data class PriceCheckResult(
     val dropped: Boolean
 )
 
-class ProductRepository(
-    private val dao: ProductDao,
-    private val priceSource: PriceSource
-) {
+class ProductRepository(private val dao: ProductDao) {
+
     val products: Flow<List<TrackedProductEntity>> = dao.observeAll()
 
     fun history(productId: Long) = dao.observeHistory(productId)
 
-    suspend fun add(name: String, query: String, targetPrice: Double?) {
+    suspend fun add(name: String, url: String, targetPrice: Double?) {
         dao.insert(
             TrackedProductEntity(
                 name = name.trim(),
-                query = query.trim().ifEmpty { name.trim() },
+                query = name.trim(),
+                url = url.trim(),
                 targetPrice = targetPrice
             )
         )
@@ -35,12 +34,14 @@ class ProductRepository(
 
     suspend fun delete(product: TrackedProductEntity) = dao.delete(product)
 
-    /** Tek bir ürünü kontrol eder, geçmişe yazar, sonucu döner. */
+    /** Tek bir ürünü (linkinden) kontrol eder, geçmişe yazar, sonucu döner. */
     suspend fun checkProduct(product: TrackedProductEntity): PriceCheckResult? {
-        val prices = priceSource.fetchPrices(product.query)
+        val prices = mutableListOf<MarketPrice>()
+        if (product.url.isNotBlank()) {
+            OnDeviceScraper.scrape(product.url)?.let { prices.add(it) }
+        }
         val lowest = prices.minByOrNull { it.price } ?: return null
 
-        // geçmişe tüm pazaryeri fiyatlarını kaydet
         prices.forEach {
             dao.insertHistory(
                 PriceHistoryEntity(productId = product.id, market = it.market, price = it.price)

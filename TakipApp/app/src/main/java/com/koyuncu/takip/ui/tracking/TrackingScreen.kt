@@ -38,6 +38,7 @@ fun TrackingScreen(vm: TrackingViewModel, modifier: Modifier = Modifier) {
     val checking by vm.checking.collectAsState()
 
     var name by remember { mutableStateOf("") }
+    var url by remember { mutableStateOf("") }
     var target by remember { mutableStateOf("") }
 
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
@@ -45,14 +46,23 @@ fun TrackingScreen(vm: TrackingViewModel, modifier: Modifier = Modifier) {
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text("Ürün (örn. DJI Mini 5 Pro)") },
+            label = { Text("Ürün adı (örn. DJI Mini 5 Pro)") },
+            singleLine = true,
             modifier = Modifier.fillMaxWidth()
+        )
+        OutlinedTextField(
+            value = url,
+            onValueChange = { url = it },
+            label = { Text("Ürün linki (Trendyol / Amazon / Akakçe)") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
         )
         OutlinedTextField(
             value = target,
             onValueChange = { target = it },
             label = { Text("Hedef fiyat (opsiyonel, TL)") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            singleLine = true,
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
         )
         Row(
@@ -61,8 +71,8 @@ fun TrackingScreen(vm: TrackingViewModel, modifier: Modifier = Modifier) {
         ) {
             Button(
                 onClick = {
-                    vm.add(name, name, target.replace(",", ".").toDoubleOrNull())
-                    name = ""; target = ""
+                    vm.add(name, url, target.replace(",", ".").toDoubleOrNull())
+                    name = ""; url = ""; target = ""
                 },
                 modifier = Modifier.weight(1f)
             ) { Text("Takibe ekle") }
@@ -94,8 +104,10 @@ fun TrackingScreen(vm: TrackingViewModel, modifier: Modifier = Modifier) {
                             } ?: "Henüz kontrol edilmedi"
                             Text(priceLine, style = MaterialTheme.typography.bodyMedium)
                             p.targetPrice?.let {
-                                Text("Hedef: %,.0f TL".format(it),
-                                    style = MaterialTheme.typography.bodySmall)
+                                Text(
+                                    "Hedef: %,.0f TL".format(it),
+                                    style = MaterialTheme.typography.bodySmall
+                                )
                             }
                         }
                         IconButton(onClick = { vm.delete(p) }) {

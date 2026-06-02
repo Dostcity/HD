@@ -14,6 +14,7 @@ data class TrackedProductEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val query: String,
+    val url: String = "",
     val targetPrice: Double? = null,
     val lastLowestPrice: Double? = null,
     val lastLowestMarket: String? = null,

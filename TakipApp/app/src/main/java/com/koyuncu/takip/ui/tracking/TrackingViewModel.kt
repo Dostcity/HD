@@ -19,9 +19,9 @@ class TrackingViewModel(private val repo: ProductRepository) : ViewModel() {
     private val _checking = MutableStateFlow(false)
     val checking: StateFlow<Boolean> = _checking.asStateFlow()
 
-    fun add(name: String, query: String, targetPrice: Double?) =
+    fun add(name: String, url: String, targetPrice: Double?) =
         viewModelScope.launch {
-            if (name.isNotBlank()) repo.add(name, query, targetPrice)
+            if (name.isNotBlank()) repo.add(name, url, targetPrice)
         }
 
     fun delete(product: TrackedProductEntity) =
