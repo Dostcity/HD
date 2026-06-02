@@ -13,8 +13,8 @@ android {
         applicationId = "com.koyuncu.takip"
         minSdk = 26
         targetSdk = 34
-        versionCode = 3
-        versionName = "0.2.1"
+        versionCode = 4
+        versionName = "0.2.2"
         vectorDrawables { useSupportLibrary = true }
     }
 
@@ -66,6 +66,4 @@ dependencies {
 
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.kotlinx.coroutines.android)
-
-    implementation(libs.androidx.biometric)
 }
