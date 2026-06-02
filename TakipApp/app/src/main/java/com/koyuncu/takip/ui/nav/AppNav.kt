@@ -3,6 +3,7 @@ package com.koyuncu.takip.ui.nav
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.TrendingDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -20,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.koyuncu.takip.ui.find.FindScreen
 import com.koyuncu.takip.ui.todo.TodoScreen
 import com.koyuncu.takip.ui.todo.TodoViewModel
 import com.koyuncu.takip.ui.tracking.TrackingScreen
@@ -28,6 +30,7 @@ import com.koyuncu.takip.ui.tracking.TrackingViewModel
 private sealed class Dest(val route: String, val label: String, val icon: ImageVector) {
     data object Todo : Dest("todo", "Yapılacaklar", Icons.AutoMirrored.Filled.List)
     data object Tracking : Dest("tracking", "Fiyat Takip", Icons.Filled.TrendingDown)
+    data object Find : Dest("find", "Telefonu Bul", Icons.Filled.Notifications)
 }
 
 @Composable
@@ -36,7 +39,7 @@ fun AppNav(
     trackingVmFactory: () -> TrackingViewModel
 ) {
     val navController = rememberNavController()
-    val items = listOf(Dest.Todo, Dest.Tracking)
+    val items = listOf(Dest.Todo, Dest.Tracking, Dest.Find)
 
     Scaffold(
         bottomBar = {
@@ -70,6 +73,9 @@ fun AppNav(
             composable(Dest.Tracking.route) {
                 val vm: TrackingViewModel = viewModel(factory = simpleFactory(trackingVmFactory))
                 TrackingScreen(vm, Modifier.padding(padding))
+            }
+            composable(Dest.Find.route) {
+                FindScreen(Modifier.padding(padding))
             }
         }
     }

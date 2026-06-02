@@ -1,6 +1,7 @@
 package com.koyuncu.takip
 
 import android.Manifest
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,6 +23,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Onceki acilis cokmesi kaydedildiyse, once hatayi gosteren ekrana yonlendir
+        if (CrashStore.hasTrace(this)) {
+            startActivity(Intent(this, CrashActivity::class.java))
+            finish()
+            return
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestNotifPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
