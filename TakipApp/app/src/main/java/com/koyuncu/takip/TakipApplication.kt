@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Process
 import com.koyuncu.takip.data.local.AppDatabase
-import com.koyuncu.takip.data.price.FakePriceSource
+import com.koyuncu.takip.data.price.RemotePriceSource
 import com.koyuncu.takip.data.repo.ProductRepository
 import com.koyuncu.takip.data.repo.TodoRepository
 import com.koyuncu.takip.notify.Notifier
@@ -21,7 +21,9 @@ class TakipApplication : Application() {
 
     private val db by lazy { AppDatabase.get(this) }
     val todoRepository by lazy { TodoRepository(db.todoDao()) }
-    val productRepository by lazy { ProductRepository(db.productDao(), FakePriceSource()) }
+    val productRepository by lazy {
+        ProductRepository(db.productDao(), RemotePriceSource(PRICES_URL))
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -50,5 +52,11 @@ class TakipApplication : Application() {
             Process.killProcess(Process.myPid())
             exitProcess(10)
         }
+    }
+
+    companion object {
+        /** GitHub Actions'in guncelledigi herkese acik fiyat dosyasi. */
+        const val PRICES_URL =
+            "https://raw.githubusercontent.com/Dostcity/HD/main/prices.json"
     }
 }
