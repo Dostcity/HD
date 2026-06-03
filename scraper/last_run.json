@@ -1,14 +1,14 @@
 {
-  "ranAt": "2026-06-02T20:19:30Z",
+  "ranAt": "2026-06-03T10:52:35Z",
   "results": [
     {
       "key": "dji-mini-5-pro",
       "market": "Trendyol",
       "status": 200,
       "blocked": false,
-      "price": 46099.0,
+      "price": 43799.0,
       "method": "discountedPrice",
-      "htmlLen": 406072
+      "htmlLen": 406517
     }
   ]
 }
