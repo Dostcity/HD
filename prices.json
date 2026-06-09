@@ -1,17 +1,10 @@
 {
-  "updatedAt": "2026-06-08T20:09:52Z",
+  "updatedAt": "2026-06-09T09:36:28Z",
   "products": [
     {
       "query": "DJI Mini 5 Pro",
       "name": "DJI Mini 5 Pro",
-      "prices": [
-        {
-          "market": "Trendyol",
-          "price": 59000.0,
-          "url": "https://www.trendyol.com/dji/mini-5-pro-turkiye-karacasulu-garantili-p-991913571",
-          "currency": "TL"
-        }
-      ]
+      "prices": []
     }
   ]
 }
