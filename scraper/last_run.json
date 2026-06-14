@@ -1,5 +1,5 @@
 {
-  "ranAt": "2026-06-14T09:28:30Z",
+  "ranAt": "2026-06-14T13:54:29Z",
   "results": [
     {
       "key": "dji-mini-5-pro",
@@ -8,7 +8,7 @@
       "blocked": false,
       "price": 43699.0,
       "method": "discountedPrice",
-      "htmlLen": 406414
+      "htmlLen": 406404
     }
   ]
 }
