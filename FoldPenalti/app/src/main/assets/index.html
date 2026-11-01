@@ -5482,8 +5482,8 @@ async function loadOppo(){const g=await parseGlb('glbKeeper');oppo=g.scene;prepP
   const hand=oRig.b.RightHand;if(hand){hand.add(oppPaddle);oppPaddle.position.set(0,0.09,0.03);oppPaddle.rotation.set(0.3,0,0);oppPaddle.scale.setScalar(1/1.0);}}
 // state
 const T={phase:'idle',me:0,op:0,server:'me',serveCount:0,rally:0,ball:{p:new THREE.Vector3(),v:new THREE.Vector3(),spin:0,side:0,bounced:false,lastHit:null,live:false},
-  px:0,ppx:0,pvx:0,pvy:0,opX:0,opTarget:0,opSwing:0,msgT:0,t:0,wait:0,best:0,serveT:0,lastBounceZ:0,done:false};
-const TTLV={kolay:{speed:1.6,err:.28,miss:.22,smash:.05,power:.85},normal:{speed:2.4,err:.17,miss:.1,smash:.15,power:1},zor:{speed:3.4,err:.09,miss:.03,smash:.3,power:1.15}};
+  px:0,ppx:0,pvx:0,pvy:0,opX:0,opTarget:0,opSwing:0,msgT:0,t:0,wait:0,best:0,serveT:0,lastBounceZ:0,done:false,swipe:null,tArr:99,flash:0,streak:0,lastHitT:0,shake:0};
+const TTLV={kolay:{speed:1.5,err:.3,miss:.3,smash:.04,power:.8,window:1.1},normal:{speed:2.4,err:.17,miss:.12,smash:.15,power:1,window:0.9},zor:{speed:3.4,err:.09,miss:.04,smash:.3,power:1.15,window:0.7}};
 const TL=()=>TTLV[level]||TTLV.normal;
 function ttSay(t,cls){say(t,cls);}
 function ttNewGame(){T.me=0;T.op=0;T.server='me';T.serveCount=0;T.rally=0;T.done=false;T.phase='serve';T.wait=0.6;ttBoard();ttPlaceServe();}
@@ -5498,7 +5498,7 @@ function ttLaunch(from,tx,tz,speed,spin,who){const b=T.ball;const dz=tz-from.z,d
   const tn=(0-from.z)/vz;if(tn>0&&tn<Tt){const yn=from.y+vy*tn-0.5*G*tn*tn;const need=TT.H+TT.NET+0.03;if(yn<need){vy+=(need-yn)/tn;}}
   b.v.set(vx,vy,vz);b.spin=spin;b.live=true;b.bounced=false;b.lastHit=who;b.side=dir;return true;}
 function ttPlayerHit(power,aimX,spin,smash){const b=T.ball;const tz=smash?0.55+Math.random()*0.35:0.45+power*0.8;const sp=smash?11:5.5+power*4.5;
-  ttLaunch(b.p,clamp(aimX,-0.68,0.68),clamp(tz,0.3,1.3),sp,spin*6,'me');SFX.pad(smash?1:power);T.rally++;ttBoard();if(smash)ttSay('SMAÇ!','');}
+  ttLaunch(b.p,clamp(aimX,-0.68,0.68),clamp(tz,0.3,1.3),sp,spin*6,'me');SFX.pad(smash?1:power);T.rally++;ttBoard();if(smash){ttSay('SMAÇ!','');T.shake=1;}else if(T.rally>0&&T.rally%6===0)ttSay('RALLİ '+T.rally,'neutral');}
 function ttOppHit(){const b=T.ball,L=TL();const smash=b.p.y>TT.H+0.22&&Math.random()<L.smash;
   const err=(Math.random()-.5)*L.err*2;const tx=clamp((Math.random()-.5)*1.3+err*2,-.72,.72);const tz=smash?-(0.5+Math.random()*0.3):-(0.5+Math.random()*0.75);
   const sp=(smash?10.5:5.5+Math.random()*3.5)*L.power;ttLaunch(b.p,tx,tz,sp,(Math.random()-.5)*4,'op');SFX.pad(smash?1:.6);T.rally++;ttBoard();
@@ -5508,7 +5508,7 @@ function ttPoint(who,why){if(T.done)return;if(who==='me')T.me++;else T.op++;T.ra
   const win=(a,b)=>a>=11&&a-b>=2;
   ttSay(who==='me'?(why||'SAYI!'):(why||'RAKİP SAYI'),who==='me'?'':'bad');if(who==='me')SFX.point();else SFX.groan();
   T.serveCount++;if(T.serveCount%2===0)T.server=T.server==='me'?'op':'me';
-  ttBoard();T.phase='point';T.wait=1.4;
+  ttBoard();T.phase='point';T.wait=1.4;T.swipe=null;
   if(win(T.me,T.op)||win(T.op,T.me)){T.done=true;T.phase='over';const w=win(T.me,T.op);T.best=Math.max(T.best,T.me);
     setTimeout(()=>{const o=$('overlay');o.querySelector('h1').innerHTML=(w?'KAZANDIN':'KAYBETTİN')+'<span>'+T.me+' – '+T.op+'</span>';$('ovtext').textContent=w?'Rakip bir dahaki sete daha sert gelecek.':'Smaç için vuruş anında parmağını yukarı fırlat.';$('start').textContent='Yeniden';o.hidden=false;},1200);}}
 function ttStep(h){const b=T.ball;if(!b.live)return;const p=b.p,v=b.v;
@@ -5529,9 +5529,8 @@ function ttStep(h){const b=T.ball;if(!b.live)return;const p=b.p,v=b.v;
   // player's return plane
   if(v.z<0&&p.z<TT.ENDP-0.05&&b.lastHit!=='me'&&T.phase==='rally'){
     if(!b.bounced||b.bouncedSide!=='me'){ttPoint('op','AUT');return;} // we only get the point if it bounced on our side first... actually ball passing us without bounce = out
-    const reach=0.24;if(Math.abs(p.x-T.px)<reach&&p.y<TT.H+0.6){const off=(p.x-T.px)/reach;const power=clamp(0.45+Math.abs(T.pvy)*0.35,0.3,1);const smash=T.pvy>1.6&&p.y>TT.H+0.12;
-      ttPlayerHit(power,p.x*0.5+off*0.9+T.pvx*0.25,T.pvx*0.4,smash);}
-    else if(p.z<TT.ENDP-0.5){ttPoint('op','KAÇIRDIN');return;}}
+    if(ttPlayerReturn()){}
+    else if(p.z<TT.ENDP-0.35){T.streak=0;ttPoint('op',T.swipe?'GEÇ KALDIN':'KAÇIRDIN');T.swipe=null;return;}}
   // opponent's return plane
   if(v.z>0&&p.z>TT.ENDO+0.05&&b.lastHit!=='op'&&T.phase==='rally'){
     if(!b.bounced||b.bouncedSide!=='op'){ttPoint('me','SAYI!');return;}
@@ -5542,9 +5541,12 @@ let ttAcc=0;
 function ttTick(dt,t){
   T.t+=dt;const b=T.ball;
   // paddle follows finger (smoothed), velocities for the hit
-  const k=1-Math.exp(-dt*22);const prev=T.ppx;T.ppx+=(T.px-T.ppx)*k;T.pvx=(T.ppx-prev)/Math.max(dt,1e-3)*0.3+T.pvx*0.7;T.pvy*=Math.exp(-dt*6);
+  // paddle glides to where the ball will cross our end line; idle at centre
+  let want=0;T.tArr=99;if(b.live&&b.v.z<0){const ta=(TT.ENDP-0.05-b.p.z)/b.v.z;T.tArr=ta;want=clamp(b.p.x+b.v.x*Math.max(0,ta)+b.spin*0.5*ta*ta,-0.9,0.9);}
+  const k=1-Math.exp(-dt*(b.live?9:4));const prev=T.ppx;T.ppx+=(want-T.ppx)*k;T.pvx=(T.ppx-prev)/Math.max(dt,1e-3)*0.3+T.pvx*0.7;
+  if(T.swipe&&performance.now()-T.swipe.t>TL().window*1000)T.swipe=null;T.flash=Math.max(0,T.flash-dt);T.shake=Math.max(0,T.shake-dt*3);
   // opponent movement
-  const L=TL();const want=b.live&&b.v.z>0?b.p.x+b.v.x*Math.max(0,(TT.ENDO+0.1-b.p.z)/Math.max(0.1,b.v.z)):0;T.opTarget+=(want-T.opTarget)*Math.min(1,dt*6);
+  const L=TL();const owant=b.live&&b.v.z>0?b.p.x+b.v.x*Math.max(0,(TT.ENDO+0.1-b.p.z)/Math.max(0.1,b.v.z)):0;T.opTarget+=(owant-T.opTarget)*Math.min(1,dt*6);
   const mv=L.speed*dt;T.opX+=clamp(T.opTarget+(T.opTargetErr||0)-T.opX,-mv,mv);T.opX=clamp(T.opX,-1,1);
   oppoGroup.position.x=T.opX;if(oRig){oRig.update(dt,t);if(T.opSwing>0){T.opSwing-=dt;if(T.opSwing<=0)oRig.set(OPOSE.ready,8);}}
   oppoGroup.position.y=Math.abs(Math.sin(t*7))*0.012;oppoGroup.updateMatrixWorld(true);
@@ -5556,42 +5558,65 @@ function ttTick(dt,t){
   if(T.phase==='rally'){ttAcc+=dt;while(ttAcc>=1/240){ttAcc-=1/240;ttStep(1/240);if(T.phase!=='rally')break;}}
   // visuals
   ttBall.position.copy(b.p);ttShadow.position.set(b.p.x,(Math.abs(b.p.x)<TT.W/2&&Math.abs(b.p.z)<TT.L/2?TT.H:0)+0.003,b.p.z);ttShadow.material.opacity=Math.max(.08,.45-(b.p.y-TT.H)*.4);
-  const padY=b.live&&b.v.z<0?clamp(b.p.y,TT.H+0.02,TT.H+0.6):TT.H+0.12;myPaddle.position.set(T.ppx,padY,TT.ENDP-0.22);myPaddle.rotation.set(-0.35,T.pvx*0.4,T.ppx*0.6);
-  ttCam.position.set(TT_CAM.x+T.ppx*0.25,TT_CAM.y,TT_CAM.z);ttCam.lookAt(TT_LOOK.x+T.ppx*0.1,TT_LOOK.y,TT_LOOK.z);
+  const padY=b.live&&b.v.z<0?clamp(b.p.y,TT.H+0.02,TT.H+0.6):TT.H+0.12;const swing=T.swipe?0.6:0;const since=(performance.now()-T.lastHitT)/1000;const follow=since<0.35?Math.sin(since/0.35*Math.PI)*0.9:0;
+  myPaddle.position.set(T.ppx,padY+follow*0.12,TT.ENDP-0.22+follow*0.25);myPaddle.rotation.set(-0.35-swing*0.5+follow*0.8,T.pvx*0.4+(T.swipe?T.swipe.aim*0.6:0),T.ppx*0.6);
+  const sh=T.shake*0.03;ttCam.position.set(TT_CAM.x+T.ppx*0.25+(Math.random()-.5)*sh,TT_CAM.y+(Math.random()-.5)*sh,TT_CAM.z);ttCam.lookAt(TT_LOOK.x+T.ppx*0.1,TT_LOOK.y,TT_LOOK.z);
 }
 // pad: finger x → paddle x; vertical flick → smash
-function ttPointer(x,y,vy){T.px=clamp((x/PW)*2-1,-1,1)*0.95;if(vy!=null)T.pvy=Math.max(T.pvy,vy);}
-function ttServeSwipe(power){if(T.phase==='serve'&&T.server==='me'){const b=T.ball;b.p.set(T.ppx*0.6,TT.H+0.22,TT.ENDP-0.25);
-  ttLaunch(b.p,T.ppx*0.4+(Math.random()-.5)*0.4,0.5+power*0.6,5+power*3,T.pvx*2,'me');b.bounced=true;b.bouncedSide='me';T.phase='rally';T.opTargetErr=(Math.random()-.5)*TL().err*2;SFX.pad(power);T.rally=0;ttBoard();}}
+function ttGesture(gs){ // one swipe or tap = one shot; applied when the ball reaches the paddle
+  const now=performance.now();const sp=gs.dist/gs.dt;const power=gs.tap?0.35:clamp((sp-0.25)/2.2,0.25,1);
+  const aim=gs.tap?0:clamp(gs.dx*2.2,-1,1);const up=gs.dy;
+  // curve of the swipe → side spin
+  let curve=0;if(gs.tr.length>4){const a=gs.tr[0],b=gs.tr[gs.tr.length-1],m=gs.tr[Math.floor(gs.tr.length/2)],cx=b.x-a.x,cy=b.y-a.y,L=Math.hypot(cx,cy)||1;curve=clamp(((m.x-a.x)*cy-(m.y-a.y)*cx)/L/L*-4,-1,1);}
+  const smash=!gs.tap&&up>0.28&&sp>1.9;
+  if(T.phase==='serve'&&T.server==='me'){const b=T.ball;b.p.set(T.ppx*0.6,TT.H+0.22,TT.ENDP-0.25);
+    ttLaunch(b.p,aim*0.55+(Math.random()-.5)*0.2,0.45+power*0.7,5+power*3.2,curve*3,'me');b.bounced=true;b.bouncedSide='me';T.phase='rally';T.opTargetErr=(Math.random()-.5)*TL().err*2;SFX.pad(power);T.rally=0;ttBoard();return;}
+  if(T.phase!=='rally')return;
+  T.swipe={aim,power,smash,curve,t:now};T.flash=0.25;}
+function ttPlayerReturn(){ // ball has reached the paddle plane
+  const b=T.ball,p=b.p,sw=T.swipe;const now=performance.now();const win=TL().window*1000;
+  if(sw&&now-sw.t<win){T.swipe=null;const smash=sw.smash&&p.y>TT.H+0.1;const aimX=clamp(sw.aim*0.72+p.x*0.15,-0.7,0.7);
+    ttPlayerHit(sw.power,aimX,sw.curve,smash);T.streak++;T.lastHitT=now;if(navigator.vibrate)try{navigator.vibrate(smash?25:12)}catch(e){}return true;}
+  return false;}
 function ttDrawPad(g,t){
   const gr=g.createLinearGradient(0,0,0,PH);gr.addColorStop(0,'#0e1a33');gr.addColorStop(1,'#0a1226');g.fillStyle=gr;g.fillRect(0,0,PW,PH);
-  // table from above in perspective
-  const top=PH*.12,bot=PH*.62,wT=PW*.5,wB=PW*.9,cx=PW/2;const PX=(x,y)=>cx+x*(wB+(wT-wB)*y)/2,PY=y=>bot+(top-bot)*y;
+  const top=PH*.1,bot=PH*.56,wT=PW*.5,wB=PW*.9,cx=PW/2;const PX=(x,y)=>cx+x*(wB+(wT-wB)*y)/2,PY=y=>bot+(top-bot)*y;
   g.fillStyle='#1f5fb8';g.beginPath();g.moveTo(PX(-1,0),PY(0));g.lineTo(PX(1,0),PY(0));g.lineTo(PX(1,1),PY(1));g.lineTo(PX(-1,1),PY(1));g.closePath();g.fill();
   g.strokeStyle='rgba(255,255,255,.85)';g.lineWidth=2;g.stroke();g.beginPath();g.moveTo(PX(0,0),PY(0));g.lineTo(PX(0,1),PY(1));g.stroke();
   g.fillStyle='rgba(255,255,255,.5)';g.fillRect(PX(-1.08,.5),PY(.5)-3,PX(1.08,.5)-PX(-1.08,.5),4);
-  // ball marker (top-down)
-  const b=T.ball;if(b.live){const u=clamp(b.p.x/(TT.W/2),-1.3,1.3),v=clamp((b.p.z+TT.L/2)/TT.L,-0.2,1.2);const r=4+Math.max(0,b.p.y-TT.H)*18;g.fillStyle='#fff2a8';g.beginPath();g.arc(PX(u,v),PY(v)-Math.max(0,b.p.y-TT.H)*40,r,0,7);g.fill();}
-  // paddle zone + paddle
-  g.fillStyle='rgba(255,214,10,.08)';g.fillRect(0,PH*.66,PW,PH*.34);
-  const px=(T.ppx/0.95+1)/2*PW,py=PH*.83;
-  g.save();g.translate(px,py);g.rotate(T.pvx*0.3);g.fillStyle='#c69c6d';roundRect(g,-7,20,14,34,5);g.fill();g.fillStyle=T.pvy>1.2?'#ffd60a':'#d81b2a';g.beginPath();g.ellipse(0,0,34,38,0,0,7);g.fill();g.strokeStyle='rgba(0,0,0,.35)';g.lineWidth=3;g.stroke();g.restore();
-  if(touching){g.strokeStyle='rgba(255,255,255,.35)';g.lineWidth=2;g.beginPath();g.arc(px,py,52,0,7);g.stroke();}
+  const b=T.ball;
+  if(b.live){const u=clamp(b.p.x/(TT.W/2),-1.3,1.3),v=clamp((b.p.z+TT.L/2)/TT.L,-0.25,1.2);const h=Math.max(0,b.p.y-TT.H);
+    g.fillStyle='rgba(0,0,0,.35)';g.beginPath();g.ellipse(PX(u,v),PY(v),5,2.5,0,0,7);g.fill();
+    g.fillStyle='#fff2a8';g.beginPath();g.arc(PX(u,v),PY(v)-h*45,4+h*10,0,7);g.fill();}
+  // hit zone: the ring closes as the ball arrives; swipe while it is yellow
+  const zx=(T.ppx/0.95+1)/2*PW*0.6+PW*0.2,zy=PH*.8,R0=Math.min(PW*.22,PH*.17);
+  const win=TL().window;const coming=b.live&&b.v.z<0&&T.tArr<win+0.3;
+  g.fillStyle='rgba(255,255,255,.05)';g.beginPath();g.arc(zx,zy,R0,0,7);g.fill();
+  if(coming){const f=clamp(T.tArr/(win+0.3),0,1);const inWin=T.tArr<win;g.strokeStyle=inWin?'rgba(255,214,10,.95)':'rgba(255,255,255,.35)';g.lineWidth=inWin?6:3;g.beginPath();g.arc(zx,zy,R0+f*R0*1.6,0,7);g.stroke();
+    if(inWin){g.fillStyle='rgba(255,214,10,'+(0.12+0.1*Math.sin(t*20))+')';g.beginPath();g.arc(zx,zy,R0,0,7);g.fill();}}
+  if(T.swipe){g.strokeStyle='#3ddc84';g.lineWidth=5;g.beginPath();g.arc(zx,zy,R0*0.8,0,7);g.stroke();
+    g.strokeStyle='rgba(61,220,132,.9)';g.lineWidth=4;g.lineCap='round';g.beginPath();g.moveTo(zx,zy);g.lineTo(zx+T.swipe.aim*R0*0.9,zy-R0*0.9*(0.5+T.swipe.power*0.5));g.stroke();}
+  // paddle
+  const px=(T.ppx/0.95+1)/2*PW*0.6+PW*0.2,py=zy;
+  g.save();g.translate(px,py);g.rotate(T.swipe?T.swipe.aim*0.5:T.pvx*0.3);g.fillStyle='#c69c6d';roundRect(g,-6,16,12,30,5);g.fill();g.fillStyle=T.swipe&&T.swipe.smash?'#ffd60a':'#d81b2a';g.beginPath();g.ellipse(0,0,28,32,0,0,7);g.fill();g.strokeStyle='rgba(0,0,0,.35)';g.lineWidth=3;g.stroke();g.restore();
+  if(touching&&tr.length>1){g.save();g.lineCap='round';g.lineJoin='round';g.shadowColor='rgba(255,214,10,.8)';g.shadowBlur=14;for(let i=1;i<tr.length;i++){const a=i/tr.length;g.strokeStyle='rgba(255,214,10,'+a+')';g.lineWidth=2+a*7;g.beginPath();g.moveTo(tr[i-1].x,tr[i-1].y);g.lineTo(tr[i].x,tr[i].y);g.stroke();}g.restore();}
   g.fillStyle='#8a97bf';g.font='600 11px Rubik,sans-serif';g.textAlign='center';
-  g.fillText(T.phase==='serve'&&T.server==='me'?'SERVİS İÇİN YUKARI KAYDIR':'PARMAĞINI SAĞA-SOLA SÜRÜKLE · VURUŞ ANINDA YUKARI FIRLAT = SMAÇ',PW/2,PH-10);g.textAlign='left';
+  const hint=T.phase==='serve'&&T.server==='me'?'SERVİS: KAYDIR (YÖN = KÖŞE, HIZ = GÜÇ)':T.phase==='serve'?'RAKİP SERVİS ATIYOR':'HALKA SARIYKEN KAYDIR · DOKUN = BLOK · HIZLI YUKARI = SMAÇ';
+  g.fillText(hint,PW/2,PH-10);g.textAlign='left';
 }
 
 /* ---------- Pad ---------- */
 const pctx=padc.getContext('2d');let PW=0,PH=0;const tr=[];let touching=false,lastSwipe=null,lastSwipeT=0;
 function resizePad(){const r=touch.getBoundingClientRect();PW=r.width;PH=r.height;padc.width=PW*DPR;padc.height=PH*DPR;pctx.setTransform(DPR,0,0,DPR,0,0);}
-touch.addEventListener('pointerdown',e=>{touch.setPointerCapture(e.pointerId);touching=true;tr.length=0;tr.push({x:e.offsetX,y:e.offsetY,t:performance.now()});if(ac()&&AC.state==='suspended')AC.resume();if(mode==='tt')ttPointer(e.offsetX,e.offsetY,null);});
+touch.addEventListener('pointerdown',e=>{touch.setPointerCapture(e.pointerId);touching=true;tr.length=0;tr.push({x:e.offsetX,y:e.offsetY,t:performance.now()});if(ac()&&AC.state==='suspended')AC.resume();});
 touch.addEventListener('pointermove',e=>{if(!touching)return;const now=performance.now(),last=tr[tr.length-1];tr.push({x:e.offsetX,y:e.offsetY,t:now});if(tr.length>60)tr.shift();
-  if(mode==='tt'&&last){const vy=(last.y-e.offsetY)/Math.max(1,now-last.t);ttPointer(e.offsetX,e.offsetY,vy);}});
-function release(){if(!touching)return;touching=false;if(tr.length<3)return;
-  const a=tr[0],b=tr[tr.length-1],dx=(b.x-a.x)/PW,dy=(a.y-b.y)/PH,dt=Math.max(30,b.t-a.t);if(dy<0.08)return;
-  const vpx=Math.hypot(b.x-a.x,b.y-a.y)/dt,power=clamp((vpx-0.35)/2.4,0,1);
+  });
+function release(){if(!touching)return;touching=false;if(tr.length<1)return;
+  const a=tr[0],b=tr[tr.length-1],dx=(b.x-a.x)/PW,dy=(a.y-b.y)/PH,dt=Math.max(30,b.t-a.t),dist=Math.hypot(b.x-a.x,b.y-a.y);
+  if(mode==='tt'){ttGesture({dx,dy,dt,dist,tap:dist<18&&dt<260,tr:tr.slice()});return;}
+  if(tr.length<3||dy<0.08)return;
+  const vpx=dist/dt,power=clamp((vpx-0.35)/2.4,0,1);
   const m=tr[Math.floor(tr.length/2)],cx=b.x-a.x,cy=b.y-a.y,L=Math.hypot(cx,cy)||1,dev=((m.x-a.x)*cy-(m.y-a.y)*cx)/L,curve=clamp(dev/L*-4,-1,1);
-  if(mode==='tt'){ttServeSwipe(power);return;}
   lastSwipe={dx,dy,power,curve};lastSwipeT=performance.now();shoot(lastSwipe);}
 touch.addEventListener('pointerup',release);touch.addEventListener('pointercancel',release);
 function roundRect(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
@@ -5671,7 +5696,7 @@ function tick(dt,t){
   drawPad(t);
 }
 function setMode(m){mode=m;try{localStorage.setItem('foldMode',m)}catch(e){}document.querySelectorAll('#modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));
-  if(m==='tt'){$('round').innerHTML='<span id="lvl"></span> · SERVİS <b id="rnd">SEN</b>';$('lblR').textContent='RAKİP 0';$('dots').style.display='none';$('ovtitle').innerHTML='FOLD<span>MASA TENİSİ</span>';$('ovtext').textContent='Üst ekranda masa, alt ekranda raketin. Parmağını sağa-sola sürükle; topa vururken yukarı fırlatırsan smaç. 11 sayı, 2 fark.';$('hintlbl').innerHTML='SÜRÜKLE · <b>RAKET</b> · FIRLAT · <b>SMAÇ</b>';scene.environment&&(ttScene.environment=scene.environment);}
+  if(m==='tt'){$('round').innerHTML='<span id="lvl"></span> · SERVİS <b id="rnd">SEN</b>';$('lblR').textContent='RAKİP 0';$('dots').style.display='none';$('ovtitle').innerHTML='FOLD<span>MASA TENİSİ</span>';$('ovtext').textContent='Üst ekranda masa, alt ekranda raketin. Parmağını sağa-sola sürükle; topa vururken yukarı fırlatırsan smaç. 11 sayı, 2 fark.';$('hintlbl').innerHTML='HALKA SARIYKEN <b>KAYDIR</b> · DOKUN <b>BLOK</b>';scene.environment&&(ttScene.environment=scene.environment);}
   else{$('round').innerHTML='<span id="lvl"></span> · ATIŞ <b id="rnd">1</b>/5';$('lblR').textContent='KALECİ';$('dots').style.display='';$('ovtitle').innerHTML='FOLD<span>PENALTI</span>';$('ovtext').textContent='Telefonu yarım kapat: üst ekranda kale, alt ekranda vuruş noktası. Topu yukarı kaydır; hız güç, kavis falso demek.';$('hintlbl').innerHTML='YUKARI KAYDIR · <b>GÜÇ</b> HIZ · <b>FALSO</b> KAVİS';}
   $('lvl').textContent=LV().label.toUpperCase();if(m==='pen')refreshBoard();else ttBoard();}
 document.querySelectorAll('#modes button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
