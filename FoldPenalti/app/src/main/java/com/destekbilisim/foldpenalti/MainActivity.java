@@ -1,6 +1,8 @@
 package com.destekbilisim.foldpenalti;
 
 import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
+import android.webkit.JavascriptInterface;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -61,12 +63,23 @@ public class MainActivity extends Activity {
                 return true; // WhatsApp / tarayıcı linkleri dışarıda açılır
             }
         });
+        web.addJavascriptInterface(new Bridge(), "FoldApp");
         web.setWebChromeClient(new WebChromeClient());
         web.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         setContentView(web);
         web.loadUrl("file:///android_asset/index.html");
 
         tracker = new WindowInfoTrackerCallbackAdapter(WindowInfoTracker.getOrCreate(this));
+    }
+
+    /** JS köprüsü: window.FoldApp.orient('landscape'|'portrait') — 101 Okey yatay oynanır. */
+    public class Bridge {
+        @JavascriptInterface
+        public void orient(final String mode) {
+            runOnUiThread(() -> setRequestedOrientation("landscape".equals(mode)
+                    ? ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                    : ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED));
+        }
     }
 
     private void hideSystemBars() {
