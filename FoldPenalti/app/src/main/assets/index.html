@@ -61,17 +61,11 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);overf
 #touch canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 #overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,10,20,.55),rgba(6,10,20,.92));display:flex;flex-direction:column;align-items:center;
   justify-content:center;gap:14px;text-align:center;padding:24px}
-#overlay[hidden]{display:none!important}
+#overlay[hidden],[hidden]{display:none!important}
 #overlay h1{font-family:var(--display);font-weight:700;font-size:clamp(44px,13vw,96px);margin:0;color:var(--accent);text-shadow:0 5px 0 #3a2d00;line-height:.9;letter-spacing:2px}
 #overlay h1 span{display:block;font-size:.4em;color:var(--fg);letter-spacing:6px;text-shadow:none}
 #overlay p{margin:0;color:var(--muted);max-width:32ch;line-height:1.5;font-size:15px}
 .btn{background:var(--accent);color:#1a1400;border:0;border-radius:12px;padding:14px 32px;font:800 16px var(--body);letter-spacing:2px;text-transform:uppercase;cursor:pointer}
-#levels,#modes{display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden;background:rgba(6,10,20,.5)}
-#levels button,#modes button{appearance:none;border:0;background:transparent;color:var(--muted);font:800 13px var(--body);letter-spacing:2px;text-transform:uppercase;padding:11px 18px;cursor:pointer}
-#levels button+button,#modes button+button{border-left:2px solid var(--line)}
-#levels button[aria-pressed="true"]{background:var(--fg);color:#0b1220}
-#modes button[aria-pressed="true"]{background:var(--accent);color:#1a1400}#modes button{text-transform:none;letter-spacing:1px;font-size:14px}
-#levels button:focus-visible,#modes button:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
 #namewrap{display:flex;align-items:center;gap:10px;color:var(--muted);font:600 12px var(--body);letter-spacing:2px;text-transform:uppercase}
 #namewrap input{width:9ch;background:rgba(6,10,20,.6);border:2px solid var(--line);border-radius:10px;color:var(--fg);font:700 18px var(--display);letter-spacing:2px;text-transform:uppercase;padding:6px 10px;text-align:center}
 #namewrap input:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
@@ -113,13 +107,6 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);overf
 .key:active{transform:translateY(1px);filter:brightness(1.3)}
 .key.wide{flex:1.6;max-width:92px;font-size:clamp(13px,3.4vw,18px);background:#3a4772}
 .key.g{background:#1d9a4a}.key.y{background:#d9a400;color:#1a1400}.key.x{background:#141b33;color:#6b7699}
-#lingoOpts{display:flex;flex-direction:column;gap:10px;align-items:center}
-#lingoOpts[hidden]{display:none!important}
-#lmodes,#llens{display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden;background:rgba(6,10,20,.5)}
-#lmodes button,#llens button{appearance:none;border:0;background:transparent;color:var(--muted);font:800 13px var(--body);letter-spacing:1px;padding:9px 14px;cursor:pointer}
-#lmodes button+button,#llens button+button{border-left:2px solid var(--line)}
-#lmodes button[aria-pressed="true"]{background:var(--fg);color:#0b1220}
-#llens button[aria-pressed="true"]{background:var(--accent);color:#1a1400}
 .lopt{display:flex;gap:8px;align-items:center;color:var(--muted);font:600 12px var(--body)}
 .lopt.col{flex-direction:column}
 .lopt[hidden]{display:none!important}
@@ -129,6 +116,38 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);overf
 .mini{appearance:none;border:2px solid var(--line);background:rgba(6,10,20,.5);color:var(--fg);border-radius:10px;padding:8px 12px;font:800 12px var(--body);letter-spacing:1px;text-transform:uppercase;cursor:pointer}
 .mini.wa{background:#25d366;border-color:#25d366;color:#062b16}
 #lpeer{font:600 12px var(--body);color:var(--muted);max-width:34ch;text-align:center;line-height:1.5}
+
+/* ---- menü akışı ---- */
+#overlay{background:linear-gradient(180deg,rgba(6,10,20,.9),rgba(6,10,20,.98));gap:14px;overflow:auto;justify-content:flex-start;padding-top:calc(max(14px,env(safe-area-inset-top,0px)) + 40px)}
+#overlay h1{font-size:clamp(36px,10vw,64px)}
+#overlay .back{position:absolute;left:14px;top:max(12px,env(safe-area-inset-top,0px));background:transparent;border:0;color:var(--muted);font:700 15px var(--body);cursor:pointer;padding:8px 10px}
+#overlay .back[hidden]{display:none!important}
+#overlay .step{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:420px}
+#overlay .step[hidden]{display:none!important}
+.cards{display:flex;flex-direction:column;gap:10px;width:100%}
+.cards.small .card{padding:12px 14px}
+.card{display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto;column-gap:12px;align-items:center;text-align:left;width:100%;padding:14px 16px;border-radius:14px;border:2px solid var(--line);background:rgba(255,255,255,.04);color:var(--fg);cursor:pointer;font-family:var(--body)}
+.card .ico{grid-row:1/3;font-size:28px;text-align:center}
+.card b{font-size:17px;letter-spacing:.5px}
+.card small{color:var(--muted);font-size:12.5px}
+.card[aria-pressed="true"]{border-color:var(--accent);background:rgba(255,214,10,.1)}
+.card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.help{margin:0;color:var(--muted);font-size:14px;line-height:1.5;max-width:34ch;text-align:center}
+.optrow{display:flex;align-items:center;gap:12px}
+.optlbl{color:var(--muted);font:600 12px var(--body);letter-spacing:2px;text-transform:uppercase;min-width:6ch;text-align:right}
+.seg{display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden;background:rgba(6,10,20,.5)}
+.seg button{appearance:none;border:0;background:transparent;color:var(--muted);font:800 13px var(--body);letter-spacing:1px;text-transform:uppercase;padding:10px 14px;cursor:pointer}
+.seg button+button{border-left:2px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--fg);color:#0b1220}
+#llens button[aria-pressed="true"]{background:var(--accent);color:#1a1400}
+.btnrow{display:flex;gap:10px}
+.btn.wa{background:#25d366;color:#062b16}
+.codebox{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 24px;border-radius:14px;border:2px dashed var(--accent);background:rgba(255,214,10,.08)}
+.codebox span{color:var(--muted);font:600 11px var(--body);letter-spacing:3px}
+.codebox b{font:700 44px var(--display);letter-spacing:10px;color:var(--accent);line-height:1}
+#lonline{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+#lonline[hidden],#lroom[hidden],#ljoinBox[hidden],#levelsWrap[hidden],#start[hidden],#next[hidden]{display:none!important}
+#lroom,#ljoinBox{display:flex;flex-direction:column;align-items:center;gap:10px}
 @media (prefers-reduced-motion:reduce){#msg,#speed,.tile.flip{transition:none;animation:none}}
 </style>
 
@@ -152,30 +171,63 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);overf
       <div id="lboard"></div>
       <div id="lstatus" class="lstatus"></div>
     </div>
-    <div id="overlay">
-      <h1 id="ovtitle">FOLD<span>PENALTI</span></h1>
-      <p id="ovtext">Telefonu yarım kapat: üst ekranda kale, alt ekranda vuruş noktası. Topu yukarı kaydır; hız güç, kavis falso demek.</p>
-      <div id="modes" role="group" aria-label="Oyun">
-        <button type="button" data-mode="pen" aria-pressed="true">⚽ Penaltı</button><button type="button" data-mode="lingo" aria-pressed="false">🔤 Lingo</button>
+    <div id="overlay" data-step="game">
+      <button type="button" id="ovback" class="back" hidden>‹ Geri</button>
+      <h1 id="ovtitle">FOLD<span>ARENA</span></h1>
+      <p id="ovtext">Hangi oyunu oynayalım?</p>
+
+      <!-- 1) oyun seçimi -->
+      <div class="step" data-step="game">
+        <div id="modes" class="cards" role="group" aria-label="Oyun">
+          <button type="button" class="card" data-mode="pen" aria-pressed="true"><span class="ico">⚽</span><b>Penaltı</b><small>3D kale, kaleciye karşı 5 atış</small></button>
+          <button type="button" class="card" data-mode="lingo" aria-pressed="false"><span class="ico">🔤</span><b>Lingo</b><small>Türkçe kelime oyunu · 4-5-6 harf</small></button>
+        </div>
+        <label id="namewrap"><span>Adın</span><input id="pname" type="text" maxlength="12" placeholder="SEN" autocomplete="off" spellcheck="false"></label>
       </div>
-      <div id="lingoOpts" hidden>
-        <div id="lmodes" role="group" aria-label="Oyun tipi">
-          <button type="button" data-lm="solo" aria-pressed="true">Tek</button><button type="button" data-lm="duel" aria-pressed="false">Sırayla</button><button type="button" data-lm="online" aria-pressed="false">Online</button>
+
+      <!-- 2a) penaltı ayarı -->
+      <div class="step" data-step="pen" hidden>
+        <p class="help">Telefonu yarım kapat: üst ekranda kale, alt ekranda vuruş noktası. Topu yukarı kaydır; hız güç, kavis falso.</p>
+      </div>
+
+      <!-- 2b) lingo: nasıl oynanacak -->
+      <div class="step" data-step="ltype" hidden>
+        <div id="lmodes" class="cards" role="group" aria-label="Oyun tipi">
+          <button type="button" class="card" data-lm="solo" aria-pressed="true"><span class="ico">👤</span><b>Tek başına</b><small>Süreye karşı, puan topla</small></button>
+          <button type="button" class="card" data-lm="duel" aria-pressed="false"><span class="ico">👥</span><b>Aynı telefonda</b><small>İki kişi sırayla tahmin eder</small></button>
+          <button type="button" class="card" data-lm="online" aria-pressed="false"><span class="ico">📶</span><b>Online arkadaşla</b><small>Oda kodu ile, WhatsApp'tan davet</small></button>
         </div>
-        <div id="llens" role="group" aria-label="Harf sayısı">
-          <button type="button" data-len="4" aria-pressed="false">4</button><button type="button" data-len="5" aria-pressed="false">5</button><button type="button" data-len="6" aria-pressed="false">6</button><button type="button" data-len="mix" aria-pressed="true">Karışık</button>
-        </div>
+      </div>
+
+      <!-- 3) lingo ayarı -->
+      <div class="step" data-step="lsetup" hidden>
+        <div class="optrow"><span class="optlbl">Harf</span>
+          <div id="llens" class="seg" role="group" aria-label="Harf sayısı">
+            <button type="button" data-len="4" aria-pressed="false">4</button><button type="button" data-len="5" aria-pressed="false">5</button><button type="button" data-len="6" aria-pressed="false">6</button><button type="button" data-len="mix" aria-pressed="true">Karışık</button>
+          </div></div>
         <div id="lduel" class="lopt" hidden><input id="lp1" type="text" maxlength="12" placeholder="1. oyuncu"><span>vs</span><input id="lp2" type="text" maxlength="12" placeholder="2. oyuncu"></div>
-        <div id="lonline" class="lopt col" hidden>
-          <div class="lrowopt"><button type="button" class="mini" id="lhost">Oda kur</button><input id="lcode" type="text" maxlength="4" placeholder="KOD" autocapitalize="characters" autocomplete="off" spellcheck="false"><button type="button" class="mini" id="ljoin">Katıl</button><button type="button" class="mini wa" id="lshare">WhatsApp</button></div>
-          <div id="lpeer">Oda kur, kodu WhatsApp'tan gönder; rakip "Katıl" deyince Başla.</div>
+        <div id="lonline" hidden>
+          <div id="lonlineChoice" class="cards small">
+            <button type="button" class="card" id="lhost"><span class="ico">➕</span><b>Oda kur</b><small>Kod oluştur, arkadaşını davet et</small></button>
+            <button type="button" class="card" id="ljoinOpen"><span class="ico">🔑</span><b>Odaya katıl</b><small>Sana gelen kodu gir</small></button>
+          </div>
+          <div id="lroom" hidden>
+            <div class="codebox"><span>ODA KODU</span><b id="lcodeShow">— — — —</b></div>
+            <button type="button" class="btn wa" id="lshare">WhatsApp ile davet gönder</button>
+            <p id="lpeer" class="help">Oda açılıyor…</p>
+          </div>
+          <div id="ljoinBox" hidden>
+            <div class="lrowopt"><input id="lcode" type="text" maxlength="4" placeholder="KOD" autocapitalize="characters" autocomplete="off" spellcheck="false" inputmode="latin"><button type="button" class="mini" id="ljoin">Katıl</button></div>
+            <p id="lpeer2" class="help">Arkadaşının WhatsApp'tan gönderdiği 4 harfli kodu yaz.</p>
+          </div>
         </div>
       </div>
-      <div id="levels" role="group" aria-label="Zorluk">
-        <button type="button" data-level="kolay" aria-pressed="false">Kolay</button><button type="button" data-level="normal" aria-pressed="true">Normal</button><button type="button" data-level="zor" aria-pressed="false">Zor</button>
-      </div>
-      <label id="namewrap"><span>Forma adı</span><input id="pname" type="text" maxlength="12" placeholder="SEN" autocomplete="off" spellcheck="false"></label>
-      <button class="btn" id="start">Düdük</button>
+
+      <div class="optrow" id="levelsWrap"><span class="optlbl">Zorluk</span>
+        <div id="levels" class="seg" role="group" aria-label="Zorluk">
+          <button type="button" data-level="kolay" aria-pressed="false">Kolay</button><button type="button" data-level="normal" aria-pressed="true">Normal</button><button type="button" data-level="zor" aria-pressed="false">Zor</button>
+        </div></div>
+      <div class="btnrow"><button class="btn" id="next">Devam</button><button class="btn" id="start" hidden>Başla</button></div>
     </div>
   </div>
   <div id="pad">
@@ -5090,6 +5142,9 @@ function updatePosture(){
 if(navigator.devicePosture)navigator.devicePosture.addEventListener('change',updatePosture);
 window.addEventListener('resize',updatePosture);updatePosture();
 $('flexbtn').addEventListener('click',()=>{const on=app.classList.toggle('flex');$('flexbtn').setAttribute('aria-pressed',on);});
+window.__hinge=function(frac){ // called by the Android shell with the fold position (0..1 of the window height), or -1 when flat
+  if(frac>0.2&&frac<0.8){app.style.gridTemplateRows=(frac*100).toFixed(2)+'% 1fr';app.classList.add('flex');$('flexbtn').setAttribute('aria-pressed','true');}
+  else{app.style.gridTemplateRows='';app.classList.remove('flex');$('flexbtn').setAttribute('aria-pressed','false');}};
 
 /* ---------- Audio ---------- */
 let AC=null;function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}return AC}
@@ -5422,8 +5477,8 @@ async function loadModels(){
   shooter.scale.setScalar(1.06);shooterGroup.add(shooter);shooterGroup.position.copy(SHOOT_START);shooterGroup.lookAt(0.2,0,6);
   kRig=new Rig(keeper);sRig=new Rig(shooter);keeperGo('ready',.1);sRig.set(POSE.stand,6);
 }
-if(window.THREE&&THREE.GLTFLoader){$('start').disabled=true;$('start').textContent='Yükleniyor…';
-  loadModels().then(()=>{$('start').disabled=false;$('start').textContent='Düdük';}).catch(e=>{console.error(e);$('ovtext').textContent='Model yüklenemedi: '+(e&&e.message||e);$('start').disabled=false;$('start').textContent='Modelsiz oyna';});}
+if(window.THREE&&THREE.GLTFLoader){window.__modelsReady=false;
+  loadModels().then(()=>{window.__modelsReady=true;const st=$('start');if(mode==='pen'&&st.textContent==='Yükleniyor…'){st.disabled=false;st.textContent='Düdük';}}).catch(e=>{console.error(e);$('ovtext').textContent='Model yüklenemedi: '+(e&&e.message||e);$('start').disabled=false;$('start').textContent='Modelsiz oyna';});}
 
 /* ---------- Game state ---------- */
 let mode='pen';try{mode=localStorage.getItem('foldMode')||'pen'}catch(e){}if(mode!=='lingo')mode='pen';
@@ -5472,7 +5527,7 @@ function endShot(result){
 }
 function nextShot(){S.round++;if(S.round>=5){S.phase='over';S.best=Math.max(S.best,S.goals);try{localStorage.setItem('foldPenBest_'+level,S.best)}catch(e){}
     const o=$('overlay');o.querySelector('h1').innerHTML=S.goals+'/5<span>'+(S.goals===5?'MÜKEMMEL':S.goals>=4?'SOĞUKKANLI':S.goals>=3?'İYİ İŞ':S.goals>=2?'ANTRENMAN LAZIM':'KALECİ GÜNÜNDE')+'</span>';
-    $('ovtext').textContent='En iyi serin: '+S.best+'/5. Falso ile kaleciyi ters köşeye yatırmayı dene.';$('start').textContent='Yeniden';o.hidden=false;}
+    showStep('pen',{title:o.querySelector('h1').innerHTML,text:'En iyi serin: '+S.best+'/5. Falso ile kaleciyi ters köşeye yatırmayı dene.'});o.hidden=false;}
   else{S.phase='aim';resetBall();keeperGo('ready',.7);resetShooter();refreshBoard();$('speed').classList.remove('show');}
 }
 
@@ -5590,7 +5645,7 @@ function endGame(){Lg.phase='over';stopTimer();const me=Lg.players[0].score,op=L
   let title,sub;if(Lg.mode==='solo'){Lg.best=Math.max(Lg.best,me);try{localStorage.setItem('lingoBest_'+level,Lg.best)}catch(e){}title=me+' PUAN';sub='En iyi: '+Lg.best+'. '+(me>=400?'Lingo ustası!':me>=250?'Güzel seri.':'Isınma turuydu.');}
   else{const w=me===op?'BERABERE':((Lg.mode==='online'&&Lg.role!=='host')?(op>me?'KAZANDIN':'KAYBETTİN'):(me>op?'KAZANDIN':'KAYBETTİN'));title=w;sub=Lg.players[0].name+' '+me+' – '+op+' '+Lg.players[1].name;}
   if(Lg.mode==='online')netState();
-  setTimeout(()=>{const o=$('overlay');o.querySelector('h1').innerHTML=title+'<span>'+sub+'</span>';$('ovtext').textContent=Lg.mode==='online'?'Aynı odada yeniden oynamak için Başla.':'Tekrar oynamak için Başla.';$('start').textContent='Yeniden';o.hidden=false;},1200);}
+  setTimeout(()=>{showStep(Lg.mode==='online'&&Lg.role==='guest'?'ltype':'lsetup',{title:title+'<span>'+sub+'</span>',text:Lg.mode==='online'?(Lg.role==='host'?'Aynı odada yeniden oynamak için Başla.':'Oda sahibi yeniden başlatabilir.'):'Tekrar oynamak için Başla.'});$('overlay').hidden=false;},1200);}
 function lingoNewGame(){try{Lg.best=+(localStorage.getItem('lingoBest_'+level)||0)}catch(e){}
   Lg.round=0;Lg.history=[];Lg.turn=0;Lg.players[0].score=0;Lg.players[1].score=0;
   Lg.players[0].name=Lg.mode==='solo'?(playerName||'SEN'):(Lg.mode==='duel'?($('lp1').value.trim()||'1. OYUNCU'):(Lg.role==='host'?(playerName||'SEN'):(Lg.peerName||'RAKİP')));
@@ -5619,8 +5674,10 @@ function netConnect(code,role,onReady){Lg.code=code;Lg.role=role;Lg.connected=fa
     c.on('message',(tp,payload)=>{let m;try{m=JSON.parse(payload.toString())}catch(e){return;}if(m.from===Lg.myId)return;netOnMessage(m);});};
   tryNext();}
 function netOnMessage(m){
-  if(m.t==='hello'){Lg.peerName=(m.name||'RAKİP').slice(0,12);$('lpeer').textContent=Lg.peerName+' katıldı';if(Lg.role==='host'){netSend({t:'hello',name:playerName||'OYUNCU',role:'host'});if(Lg.phase==='play'||Lg.phase==='reveal'){Lg.players[1].name=Lg.peerName;updateHud();netState();}}
-    else{$('lpeer').textContent='Oda sahibi: '+Lg.peerName;}return;}
+  if(m.t==='hello'){Lg.peerName=(m.name||'RAKİP').slice(0,12);
+    if(Lg.role==='host'){$('lpeer').innerHTML='<b>'+Lg.peerName+'</b> odaya katıldı. Başla\'ya bas!';netSend({t:'hello',name:playerName||'OYUNCU',role:'host'});if(Lg.phase==='play'||Lg.phase==='reveal'){Lg.players[1].name=Lg.peerName;updateHud();netState();}}
+    else{$('lpeer2').innerHTML='Oda sahibi: <b>'+Lg.peerName+'</b>. Başlatması bekleniyor…';if(Lg.phase==='idle'){Lg.players[0].name=Lg.peerName;updateHud();setStatus('<b>'+Lg.peerName+'</b> odada. Başlatması bekleniyor…');}}
+    updateStartBtn();return;}
   if(Lg.role==='host'){
     if(m.t==='guess'&&Lg.phase==='play'&&Lg.turn===1){Lg.cur=m.w;submitGuess(m.w,1);if(Lg.phase==='play'&&Lg.turn===1){netSend({t:'rejected'});}}
   }else{
@@ -5636,11 +5693,19 @@ function shareInvite(){const txt='Fold Lingo\'da beni yen! Oda kodu: '+Lg.code+'
 /* ---------- overlay wiring ---------- */
 function lingoSetMode(m){Lg.mode=m;document.querySelectorAll('#lmodes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lm===m));$('lduel').hidden=m!=='duel';$('lonline').hidden=m!=='online';}
 function lingoSetLen(l){Lg.lens=l;document.querySelectorAll('#llens button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.len===String(l)));try{localStorage.setItem('lingoLen',String(l))}catch(e){}}
-document.querySelectorAll('#lmodes button').forEach(b=>b.addEventListener('click',()=>lingoSetMode(b.dataset.lm)));
+document.querySelectorAll('#lmodes button').forEach(b=>b.addEventListener('click',()=>{lingoSetMode(b.dataset.lm);showStep('lsetup');}));
 document.querySelectorAll('#llens button').forEach(b=>b.addEventListener('click',()=>lingoSetLen(b.dataset.len==='mix'?'mix':+b.dataset.len)));
 try{const sl=localStorage.getItem('lingoLen');if(sl)lingoSetLen(sl==='mix'?'mix':+sl);}catch(e){}
-$('lhost').addEventListener('click',()=>{const code=makeCode();$('lcode').value=code;$('lpeer').textContent='Bağlanıyor…';netConnect(code,'host',(ok,err)=>{$('lpeer').textContent=ok?'Oda açıldı: '+code+' — davet gönder, rakip gelince Başla':'Hata: '+err;});});
-$('ljoin').addEventListener('click',()=>{const code=($('lcode').value||'').trim().toUpperCase();if(code.length!==4){$('lpeer').textContent='4 harfli oda kodu gir';return;}$('lpeer').textContent='Bağlanıyor…';netConnect(code,'guest',(ok,err)=>{$('lpeer').textContent=ok?'Odaya girildi: '+code:'Hata: '+err;});});
+function onlineView(v){$('lonlineChoice').hidden=v!=='choice';$('lroom').hidden=v!=='room';$('ljoinBox').hidden=v!=='join';updateStartBtn();}
+function updateStartBtn(){const st=$('start');if(mode==='lingo'&&Lg.mode==='online'){const ready=Lg.connected&&(Lg.role==='host'?!!Lg.peerName:!!Lg.peerName);st.hidden=!(Lg.role==='host');st.disabled=Lg.role==='host'&&!ready;st.textContent=Lg.role==='host'?(ready?'Başla':'Rakip bekleniyor…'):'Başla';}
+  else{st.disabled=false;st.textContent=mode==='pen'?'Düdük':'Başla';}}
+$('lhost').addEventListener('click',()=>{const code=makeCode();Lg.peerName='';$('lcodeShow').textContent=code.split('').join(' ');onlineView('room');$('lpeer').textContent='Oda açılıyor…';
+  netConnect(code,'host',(ok,err)=>{$('lpeer').textContent=ok?'Oda hazır. Kodu WhatsApp\'tan gönder; arkadaşın "Odaya katıl" deyip kodu girince burada görünecek.':'Bağlanılamadı: '+err+'. İnterneti kontrol edip tekrar dene.';updateStartBtn();});});
+$('ljoinOpen').addEventListener('click',()=>{onlineView('join');setTimeout(()=>$('lcode').focus(),50);});
+$('ljoin').addEventListener('click',()=>{const code=($('lcode').value||'').trim().toUpperCase();if(code.length!==4){$('lpeer2').textContent='Kod 4 harf olmalı.';return;}$('lpeer2').textContent='Bağlanıyor…';Lg.peerName='';
+  netConnect(code,'guest',(ok,err)=>{$('lpeer2').textContent=ok?'Odaya girildi. Oda sahibi Başla\'ya basınca oyun açılır — bu ekranda bekle.':'Bağlanılamadı: '+err;if(ok){$('start').hidden=true;guestWait();}});});
+function guestWait(){ // guest: hide the menu, show the board with a waiting message; host's first state message starts the game
+  if(Lg.role!=='guest')return;$('overlay').hidden=true;lingoShow(true);buildKeyboard();Lg.players[0].name=Lg.peerName||'ODA SAHİBİ';Lg.players[1].name=playerName||'SEN';Lg.players[0].score=0;Lg.players[1].score=0;Lg.phase='idle';Lg.rows=[];Lg.len=5;Lg.known=[];lboard.innerHTML='';updateHud();setStatus('Oda sahibinin başlatması bekleniyor… Kod: <b>'+Lg.code+'</b>');}
 $('lshare').addEventListener('click',()=>{if(!Lg.code){$('lpeer').textContent='Önce oda kur';return;}shareInvite();});
 // physical keyboard support (desktop test)
 window.addEventListener('keydown',e=>{if(mode!=='lingo'||!$('overlay').hidden)return;const k=e.key;if(k==='Enter')lingoKey('↵');else if(k==='Backspace')lingoKey('⌫');else{const c=k.toLowerCase().replace('I','ı');if(/^[a-zçğıöşü]$/.test(c))lingoKey(c);}});
@@ -5733,13 +5798,24 @@ function tick(dt,t){
   drawPad(t);
 }
 function setMode(m){mode=m;try{localStorage.setItem('foldMode',m)}catch(e){}document.querySelectorAll('#modes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));
-  const lg=m==='lingo';$('lingoOpts').hidden=!lg;
-  if(lg){$('ovtitle').innerHTML='FOLD<span>LİNGO</span>';$('ovtext').textContent='Üst ekranda tahta, alt ekranda klavye. İlk harf verilir; 4, 5 veya 6 harfli kelimeyi bul. Zorluk süreyi ve hak sayısını belirler.';lingoShow(true);}
-  else{$('round').innerHTML='<span id="lvl"></span> · ATIŞ <b id="rnd">1</b>/5';$('lblR').textContent='KALECİ';$('dots').style.display='';$('ovtitle').innerHTML='FOLD<span>PENALTI</span>';$('ovtext').textContent='Telefonu yarım kapat: üst ekranda kale, alt ekranda vuruş noktası. Topu yukarı kaydır; hız güç, kavis falso demek.';$('hintlbl').innerHTML='YUKARI KAYDIR · <b>GÜÇ</b> HIZ · <b>FALSO</b> KAVİS';lingoShow(false);}
+  if(m==='lingo'){lingoShow(true);}
+  else{$('round').innerHTML='<span id="lvl"></span> · ATIŞ <b id="rnd">1</b>/5';$('lblR').textContent='KALECİ';$('dots').style.display='';$('hintlbl').innerHTML='YUKARI KAYDIR · <b>GÜÇ</b> HIZ · <b>FALSO</b> KAVİS';lingoShow(false);}
   const lv=$('lvl');if(lv)lv.textContent=LV().label.toUpperCase();if(m==='pen')refreshBoard();}
-document.querySelectorAll('#modes button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
-$('start').addEventListener('click',()=>{if($('start').disabled)return;const nm=$('pname').value;if(nm.trim()!==playerName)applyName(nm);try{S.best=+(localStorage.getItem('foldPenBest_'+level)||0)}catch(e){}$('overlay').hidden=true;if(ac()&&AC.state==='suspended')AC.resume();if(mode==='lingo'){lingoNewGame();}else{SFX.whistle();newGame();}});
-document.querySelectorAll('#levels button').forEach(b=>b.addEventListener('click',()=>setLevel(b.dataset.level)));setLevel(level);$('pname').value=playerName;setMode(mode);
+const STEP_TITLES={game:['FOLD<span>ARENA</span>','Hangi oyunu oynayalım?'],pen:['FOLD<span>PENALTI</span>','Zorluğu seç, düdüğe bas.'],ltype:['FOLD<span>LİNGO</span>','Nasıl oynayacaksın?'],lsetup:['FOLD<span>LİNGO</span>','']};
+let menuStep='game';
+function showStep(st,o){menuStep=st;o=o||{};document.querySelectorAll('#overlay .step').forEach(d=>d.hidden=d.dataset.step!==st);
+  const t=STEP_TITLES[st];$('ovtitle').innerHTML=o.title||t[0];
+  let text=o.text!=null?o.text:t[1];if(st==='lsetup'&&o.text==null)text=Lg.mode==='solo'?'Süreye karşı 5 kelime. Harf sayısını ve zorluğu seç.':Lg.mode==='duel'?'İki oyuncu sırayla tahmin eder; bulan puanı alır.':'Oda kur ve kodu arkadaşına gönder ya da gelen kodla odaya katıl.';
+  $('ovtext').textContent=text;$('ovtext').hidden=!text;
+  $('ovback').hidden=st==='game';$('levelsWrap').hidden=!(st==='pen'||(st==='lsetup'&&!(Lg.mode==='online'&&Lg.role==='guest')));
+  $('next').hidden=st!=='game';
+  if(st==='lsetup'){lingoSetMode(Lg.mode);if(Lg.mode==='online')onlineView(Lg.role==='host'?'room':Lg.role==='guest'?'join':'choice');}
+  updateStartBtn();$('start').hidden=st==='game'||st==='ltype'||(st==='lsetup'&&Lg.mode==='online'&&Lg.role!=='host');}
+$('ovback').addEventListener('click',()=>{if(menuStep==='lsetup'){if(Lg.mode==='online'&&Lg.net){try{Lg.net.end(true)}catch(e){}Lg.net=null;Lg.connected=false;Lg.role=null;Lg.peerName='';}showStep('ltype');}else showStep('game');});
+$('next').addEventListener('click',()=>{const nm=$('pname').value;if(nm.trim()!==playerName)applyName(nm);showStep(mode==='pen'?'pen':'ltype');});
+document.querySelectorAll('#modes button').forEach(b=>b.addEventListener('click',()=>{setMode(b.dataset.mode);const nm=$('pname').value;if(nm.trim()!==playerName)applyName(nm);showStep(b.dataset.mode==='pen'?'pen':'ltype');}));
+$('start').addEventListener('click',()=>{if($('start').disabled)return;if(mode==='pen'&&window.__modelsReady===false){$('start').disabled=true;$('start').textContent='Yükleniyor…';return;}try{S.best=+(localStorage.getItem('foldPenBest_'+level)||0)}catch(e){}$('overlay').hidden=true;if(ac()&&AC.state==='suspended')AC.resume();if(mode==='lingo'){lingoNewGame();}else{SFX.whistle();newGame();}});
+document.querySelectorAll('#levels button').forEach(b=>b.addEventListener('click',()=>setLevel(b.dataset.level)));setLevel(level);$('pname').value=playerName;setMode(mode);showStep('game');
 function start(){resizeGL();resizePad();S.phase='wait';refreshBoard();loop();}
 if(window.claude&&window.claude.hot&&window.claude.hot.snapshot)window.claude.hot.snapshot(()=>({}));
 (window.claude&&window.claude.hot&&window.claude.hot.ready)?window.claude.hot.ready(start):start();
