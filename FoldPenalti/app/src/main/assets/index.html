@@ -150,50 +150,68 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);overf
 #lonline[hidden],#lroom[hidden],#ljoinBox[hidden],#levelsWrap[hidden],#start[hidden],#next[hidden]{display:none!important}
 #lroom,#ljoinBox{display:flex;flex-direction:column;align-items:center;gap:10px}
 
-/* ---- 101 Okey ---- */
-#okey{position:absolute;inset:0;display:flex;flex-direction:column;gap:6px;padding:calc(max(8px,env(safe-area-inset-top,0px)) + 4px) 10px 6px;background:radial-gradient(120% 90% at 50% 0%,#1d4d35 0%,#0f3323 55%,#0a241a 100%)}
+/* ---- 101 Okey (Plus düzeni) ---- */
+#okey{position:absolute;inset:0;display:flex;flex-direction:column;gap:4px;padding:calc(max(6px,env(safe-area-inset-top,0px)) + 2px) 8px 4px;background:#0b2a4a}
 #okey[hidden]{display:none!important}
-.ohud{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--display);font-size:clamp(15px,3.8vw,22px);letter-spacing:1px;color:#cfe6d6}
-.ohud b{color:var(--accent)}
-.okeybadge{display:flex;align-items:center;gap:6px}.okeybadge i{display:inline-flex}
+.ohud{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--display);font-size:clamp(14px,3.6vw,20px);letter-spacing:1px;color:#bcd3ea;padding:0 4px}
+.ohud b{color:var(--accent)}.okeybadge{display:flex;align-items:center;gap:6px}.okeybadge i{display:inline-flex}
 .otimer{font-size:1.5em;color:#fff;font-variant-numeric:tabular-nums;line-height:1}
-#oseats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-.oseat{background:rgba(0,0,0,.25);border-radius:10px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;font-size:12px;color:#cfe6d6;border:2px solid transparent;min-width:0}
-.oseat.left{order:1}.oseat.top{order:2}.oseat.right{order:3}
-.oseat.turn{border-color:var(--accent)}
-.oseat b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.oseat span{color:#8fb59e;font-size:11px}
-.odisc{display:flex;gap:3px;min-height:34px}
-#ocenter{display:grid;grid-template-columns:1fr 1fr 1fr 1.4fr;gap:6px;align-items:stretch}
-#ocenter>div{background:rgba(0,0,0,.25);border-radius:10px;padding:6px;display:flex;flex-direction:column;align-items:center;gap:4px;border:2px solid transparent;min-width:0}
-#ocenter span{font:600 10px var(--body);letter-spacing:1px;color:#8fb59e;text-align:center}
-#ocenter .can{border-color:var(--accent);box-shadow:0 0 14px rgba(255,214,10,.3);cursor:pointer}
-.opile b{font:700 26px var(--display);color:#fff;line-height:1}
-.omine{flex-direction:row!important;flex-wrap:wrap;justify-content:center}
-#otable{flex:1;min-height:0;overflow:auto;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;padding:4px}
-.ogroup{position:relative;display:flex;gap:2px;padding:6px 6px 10px;background:rgba(0,0,0,.22);border-radius:8px;border:1px solid rgba(255,255,255,.08);cursor:pointer}
-.ogroup.pair{border-style:dashed}
-.ogroup i{position:absolute;left:6px;bottom:0;font:600 8px var(--body);color:#8fb59e;letter-spacing:1px;text-transform:uppercase}
-.otile{width:38px;height:54px;border-radius:5px;background:linear-gradient(180deg,#fdf6e3,#efe3c6);display:flex;align-items:center;justify-content:center;font:700 24px var(--display);box-shadow:0 2px 0 #b8a98a,0 3px 6px rgba(0,0,0,.4);position:relative;user-select:none;-webkit-user-select:none;touch-action:none}
-.otile.sm{width:26px;height:36px;font-size:16px;border-radius:4px;box-shadow:0 1px 0 #b8a98a,0 2px 4px rgba(0,0,0,.4)}
-.otile::after{content:"";position:absolute;bottom:6px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.55}
-.otile.sm::after{bottom:3px;width:4px;height:4px}
+#ofelt{position:relative;flex:1;min-height:0;border-radius:14px;background:radial-gradient(120% 100% at 50% 40%,#2a6fb0 0%,#1b5190 55%,#133b6c 100%);box-shadow:inset 0 0 0 6px #0e2f55,inset 0 0 40px rgba(0,0,0,.45);overflow:hidden}
+.oseat{position:absolute;display:flex;align-items:center;gap:5px;background:rgba(5,20,40,.78);color:#e6f0ff;border-radius:999px;padding:4px 10px 4px 5px;font:600 11px var(--body);border:2px solid transparent;z-index:3;max-width:40%}
+.oseat .av{width:20px;height:20px;border-radius:50%;background:#1d4d7a;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
+.oseat .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:9ch}
+.oseat .cnt{background:#0a1a2e;border-radius:6px;padding:1px 6px;font-weight:800;color:var(--accent)}
+.oseat .badge{background:#3ddc84;color:#06331a;border-radius:6px;padding:1px 5px;font-size:9px;letter-spacing:1px}
+.oseat.turn{border-color:var(--accent);box-shadow:0 0 14px rgba(255,214,10,.45)}
+.oseat.top{top:6px;left:50%;transform:translateX(-50%)}
+.oseat.left,.oseat.right{top:50%;transform:translateY(-50%);flex-direction:column;width:68px;padding:6px 4px;border-radius:12px;gap:3px;text-align:center}
+.oseat.left{left:4px}.oseat.right{right:4px}
+.oseat.left .nm,.oseat.right .nm{max-width:60px;font-size:10px}
+.ocorner{position:absolute;width:64px;height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;background:rgba(0,0,0,.18);z-index:2}
+.ocorner .lab{position:absolute;top:-8px;font:800 10px var(--body);letter-spacing:2px;color:#1a1400;background:var(--accent);border-radius:6px;padding:1px 6px;display:none}
+.ocorner.can{background:rgba(255,214,10,.18);box-shadow:0 0 0 2px var(--accent),0 0 18px rgba(255,214,10,.45);cursor:pointer}
+.ocorner.can .lab{display:block}
+.ocorner .stack{position:relative;width:34px;height:48px}
+.ocorner .stack .otile{position:absolute;left:calc(var(--i) * 4px);top:calc(var(--i) * -3px)}
+.ocorner.tl{top:40px;left:6px}.ocorner.tr{top:40px;right:6px}.ocorner.bl{bottom:6px;left:6px}.ocorner.br{bottom:6px;right:6px}
+.oslotghost{width:34px;height:48px;border-radius:5px;border:2px dashed rgba(255,255,255,.25)}
+.ocore{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);display:flex;gap:10px;align-items:flex-end;z-index:2}
+.opile{position:relative;cursor:default}.opile b{position:absolute;right:-8px;top:-8px;background:#e53935;color:#fff;border-radius:999px;font:800 11px var(--body);padding:2px 7px;box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.opile.can{cursor:pointer}.opile.can .otile{box-shadow:0 0 0 3px var(--accent),0 0 18px rgba(255,214,10,.5)}
+.oindw{display:flex;align-items:center}
+.opanel{position:absolute;top:42px;bottom:68px;width:calc(50% - 82px);background:rgba(5,25,55,.55);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:6px;overflow:auto;align-content:flex-start}
+.opanel.l{left:78px}.opanel.r{right:78px}
+.ogroup{display:flex;gap:1px;padding:3px;border-radius:6px;background:rgba(0,0,0,.2);width:max-content;max-width:100%;cursor:pointer}
+.ogroup.pair{outline:1px dashed rgba(255,255,255,.3)}
+.ogroup.can{box-shadow:0 0 0 2px var(--accent)}
+.otile{width:42px;height:58px;border-radius:5px;background:linear-gradient(180deg,#fffaf0,#efe6d2);display:flex;align-items:center;justify-content:center;font:700 26px var(--display);box-shadow:0 2px 0 #b9ab8c,0 3px 6px rgba(0,0,0,.45);position:relative;user-select:none;-webkit-user-select:none;touch-action:none;flex:none}
+.otile.md{width:30px;height:42px;font-size:19px;border-radius:4px;box-shadow:0 1px 0 #b9ab8c,0 2px 4px rgba(0,0,0,.4)}
+.otile.sm{width:22px;height:30px;font-size:14px;border-radius:3px;box-shadow:0 1px 0 #b9ab8c}
+.otile.back{background:linear-gradient(135deg,#7a1f1f,#4e1010);box-shadow:0 2px 0 #2a0808,0 3px 6px rgba(0,0,0,.5);width:34px;height:48px}
+.otile.back::before{content:"";position:absolute;inset:4px;border:1px solid rgba(255,255,255,.25);border-radius:3px}
+.otile::after{content:"";position:absolute;bottom:5px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.5}
+.otile.md::after{bottom:3px;width:4px;height:4px}.otile.sm::after,.otile.back::after{display:none}
 .otile.wild{outline:2px solid var(--accent);outline-offset:-2px}
-.otile .fk{font-size:.9em}
+.otile .fk{font-size:.8em;color:#c62828}
 .otile.sel{transform:translateY(-10px);box-shadow:0 0 0 3px var(--accent),0 10px 16px rgba(0,0,0,.5)}
 .otile.lift{opacity:.35}
 .otile.ghost{position:fixed;left:0;top:0;z-index:50;pointer-events:none;transform:translate(-999px,-999px)}
-#otoast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%) translateY(20px);background:rgba(6,10,20,.92);color:var(--fg);padding:8px 14px;border-radius:10px;font:600 13px var(--body);opacity:0;transition:.2s;pointer-events:none;max-width:90%;text-align:center}
+#oscores{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;font:600 11px var(--body);color:#bcd3ea}
+#oscores .row{display:flex;gap:6px;background:rgba(0,0,0,.25);border-radius:6px;padding:2px 8px}
+#oscores .row.me{outline:1px solid rgba(255,214,10,.5)}#oscores b{color:#fff}#oscores i{color:var(--bad);font-style:normal}
+#otoast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%) translateY(20px);background:rgba(6,10,20,.92);color:var(--fg);padding:8px 14px;border-radius:10px;font:600 13px var(--body);opacity:0;transition:.2s;pointer-events:none;max-width:90%;text-align:center;z-index:5}
 #otoast.show{opacity:1;transform:translateX(-50%)}
-#orackwrap{margin:6px 10px calc(10px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;min-height:0}
+#orackwrap{margin:6px 8px calc(8px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;min-height:0;justify-content:center}
 #orackwrap[hidden]{display:none!important}
-#obtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.obtn{appearance:none;border:2px solid var(--line);background:rgba(255,255,255,.05);color:var(--fg);border-radius:10px;padding:9px 16px;font:800 13px var(--body);letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+#obtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;min-height:40px}
+.obtn{appearance:none;border:2px solid var(--line);background:rgba(255,255,255,.06);color:var(--fg);border-radius:12px;padding:12px 22px;font:800 14px var(--body);letter-spacing:1px;cursor:pointer}
 .obtn.primary{background:var(--accent);border-color:var(--accent);color:#1a1400}.obtn.danger{background:var(--bad);border-color:var(--bad);color:#fff}
 .obtn:disabled{opacity:.35;cursor:default}
-#orack{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;background:linear-gradient(180deg,#5a3b1e,#3f2812);padding:8px;border-radius:12px;box-shadow:inset 0 2px 6px rgba(0,0,0,.5);touch-action:none}
-.oslot{aspect-ratio:38/54;border-radius:5px;background:rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}
-.oslot .otile{width:100%;height:100%;font-size:clamp(16px,4.4vw,24px)}
+.orackrow{display:flex;gap:6px;align-items:stretch}
+.osort{appearance:none;border:0;border-radius:10px;background:linear-gradient(180deg,#2a4f80,#1a3558);color:#dbe8ff;font:800 10px var(--body);letter-spacing:1px;line-height:1.3;width:44px;flex:none;cursor:pointer;box-shadow:inset 0 0 0 2px rgba(255,255,255,.08)}
+#orack{flex:1;display:grid;grid-template-columns:repeat(12,1fr);gap:4px;background:linear-gradient(180deg,#c98a3a,#8d5a1f 55%,#6e4315);padding:6px;border-radius:10px;box-shadow:inset 0 3px 8px rgba(0,0,0,.45),0 4px 10px rgba(0,0,0,.4);touch-action:none}
+.oslot{aspect-ratio:42/58;border-radius:4px;background:rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;min-width:0}
+.oslot .otile{width:100%;height:100%;font-size:clamp(15px,4vw,26px)}
 @media (prefers-reduced-motion:reduce){#msg,#speed,.tile.flip{transition:none;animation:none}}
 </style>
 
@@ -210,9 +228,8 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);overf
     <div id="msg"></div>
     <div id="okey" hidden>
       <div class="ohud"><span id="ohand">EL 1</span><span class="okeybadge">OKEY <i id="ookey"></i></span><span>PUAN <b id="oscore">0</b></span><span id="otimer" class="otimer">30</span></div>
-      <div id="oseats"></div>
-      <div id="ocenter"></div>
-      <div id="otable"></div>
+      <div id="ofelt"></div>
+      <div id="oscores"></div>
       <div id="oinfo" class="lstatus"></div>
       <div id="otoast"></div>
     </div>
@@ -319,7 +336,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);overf
     </div>
     <div id="touch"><canvas id="padc"></canvas></div>
     <div id="lkbwrap" hidden><div id="lkb"></div></div>
-    <div id="orackwrap" hidden><div id="obtns"></div><div id="orack"></div></div>
+    <div id="orackwrap" hidden><div id="obtns"></div><div class="orackrow"><button type="button" class="osort" id="osortCift">ÇİFT<br>DİZ</button><div id="orack"></div><button type="button" class="osort" id="osortSeri">SERİ<br>DİZ</button></div></div>
   </div>
 </div>
 
@@ -5823,7 +5840,6 @@ function okMeld(tiles,g){if(tiles.length<3)return null;const ids=tiles.map(t=>ok
       // place extra wilds at ends
       let e=extra;while(e>0&&hi<maxN){hi++;e--;}while(e>0&&lo>1){lo--;e--;}if(e>0)return null;let v=0;for(let k=lo;k<=hi;k++)v+=k>13?1:k;return {kind:'run',value:v,lo,hi};};
     let r=tryRun(ns,13);if(r)return r;
-    if(ns[0]===1){const alt=ns.slice(1).concat([14]);r=tryRun(alt,14);if(r)return r;}
     return null;}
   if(real.length===0)return {kind:'set',value:13*tiles.length}; // all wilds
   return null;}
@@ -5859,8 +5875,15 @@ function okNewGame(names,bots){const deck=okShuffle(okNewDeck());const ind=deck.
   g.turn=starter;g.phase='play';g.took=null;return g;}
 function okNext(g){g.turn=(g.turn+1)%4;g.phase='draw';g.took=null;g.laidThisTurn=false;g.turnStart=Date.now();}
 function okHandValue(p,g){return p.hand.reduce((s,t)=>s+(okIdent(t,g).wild?101:okVal(t,g)),0);}
-function okFinishScore(g,winnerIdx,withOkey){const w=g.players[winnerIdx];const fromHand=!w.opened;const dbl=(withOkey?2:1)*(w.pairsOpen?2:1)*(fromHand?4:1);
-  g.players.forEach((p,i)=>{if(i===winnerIdx){p.score=0;return;}let v=okHandValue(p,g);if(!p.opened)v=Math.max(v*2,202);p.score=v*dbl;});}
+function okFinishScore(g,winnerIdx,withOkey,elden){const w=g.players[winnerIdx];
+  // 101 Okey tablosu: kazanan eksi puan alır, diğerleri eldeki taş toplamı × katsayı (okey 101 sayılır)
+  let win=-101,mulSets=1,mulPairs=2,unopened=202;
+  if(w.pairsOpen&&withOkey){win=-404;mulSets=4;mulPairs=8;unopened=404;}
+  else if(w.pairsOpen||withOkey){win=-202;mulSets=2;mulPairs=4;unopened=404;}
+  if(elden){win=withOkey?-404:-202;}
+  g.players.forEach((p,i)=>{if(i===winnerIdx){p.score=win+ (p.pen||0);return;}
+    let v;if(elden)v=withOkey?808:404;else if(!p.opened)v=unopened;else v=okHandValue(p,g)*(p.pairsOpen?mulPairs:mulSets);p.score=v+(p.pen||0);});
+  g.result={winner:winnerIdx,withOkey,elden,pairs:w.pairsOpen,tags:[withOkey?'Okeyle (katlamalı)':null,w.pairsOpen?'Çiftten':null,elden?'Elden':null,g.helped&&g.helped[winnerIdx]?null:'Yardımsız'].filter(Boolean)};}
 /* ---------- actions (host side) ---------- */
 function okAct(g,seat,a){ // returns error string or null
   const p=g.players[seat];if(g.over)return 'Oyun bitti';if(g.turn!==seat)return 'Sıra sende değil';
@@ -5873,11 +5896,13 @@ function okAct(g,seat,a){ // returns error string or null
     const pairs=a.pairs;if(pairs){if(tiles.length<5||tiles.some(gr=>gr.length!==2||!okIsPair(gr[0],gr[1],g)))return 'Çift açmak için en az 5 çift';p.pairsOpen=true;}
     else{for(const gr of tiles)if(!okMeld(gr,g))return 'Geçersiz grup';const v=okOpeningValue(tiles,g);if(v<101)return 'Toplam '+v+' — en az 101 gerekir';}
     if(g.took==='discard'&&g.mustUse!=null&&!tiles.flat().some(t=>t.id===g.mustUse))return 'Yerden aldığın taşı kullanmalısın';
-    tiles.forEach(gr=>{gr.forEach(t=>p.hand.splice(p.hand.indexOf(t),1));g.table.push({owner:seat,tiles:gr,pair:!!pairs});});p.opened=true;g.laidThisTurn=true;g.mustUse=null;
-    if(p.hand.length===0){return okFinish(g,seat,null);}return null;}
-  if(a.t==='lay'){if(g.phase!=='play')return 'Önce taş çek';if(!p.opened)return 'Önce açmalısın';if(p.pairsOpen)return 'Çift açan işleyemez';const t=p.hand.find(x=>x.id===a.tile);const grp=g.table[a.group];if(!t||!grp)return 'Taş/grup yok';
-    const arr=okAddToGroup(grp,t,g);if(!arr)return 'Bu taş o gruba uymuyor';grp.tiles=arr;p.hand.splice(p.hand.indexOf(t),1);g.laidThisTurn=true;if(p.hand.length===0)return okFinish(g,seat,null);return null;}
-  if(a.t==='laypair'){if(g.phase!=='play')return 'Önce taş çek';if(!p.pairsOpen)return 'Çift açmadın';const ts=a.tiles.map(id=>p.hand.find(x=>x.id===id));if(ts.length!==2||ts.some(x=>!x)||!okIsPair(ts[0],ts[1],g))return 'Geçerli bir çift seç';ts.forEach(t=>p.hand.splice(p.hand.indexOf(t),1));g.table.push({owner:seat,tiles:ts,pair:true});g.laidThisTurn=true;if(p.hand.length===0)return okFinish(g,seat,null);return null;}
+    const total=tiles.reduce((n,gr)=>n+gr.length,0);if(p.hand.length-total<1)return 'Bitirmek için bir taş atman gerekir';
+    const elden=(p.hand.length-total===1)&&g.table.every(x=>x.owner===seat)&&!g.anyOpened;
+    tiles.forEach(gr=>{gr.forEach(t=>p.hand.splice(p.hand.indexOf(t),1));g.table.push({owner:seat,tiles:gr,pair:!!pairs});});p.opened=true;g.anyOpened=true;g.laidThisTurn=true;g.mustUse=null;if(elden)g.eldenCandidate=seat;return null;}
+  if(a.t==='lay'){if(g.phase!=='play')return 'Önce taş çek';if(!p.opened)return 'Önce açmalısın';const t=p.hand.find(x=>x.id===a.tile);const grp=g.table[a.group];if(!t||!grp)return 'Taş/grup yok';
+    const arr=okAddToGroup(grp,t,g);if(!arr)return 'Bu taş o gruba uymuyor';grp.tiles=arr;p.hand.splice(p.hand.indexOf(t),1);g.laidThisTurn=true;if(grp.owner!==seat){g.helped=g.helped||{};g.helped[seat]=true;}if(p.hand.length===1&&g.took!=null){/* must still discard */}if(p.hand.length===0)return 'Son taşı atarak bitirmelisin';return null;}
+  if(a.t==='laypair'){if(g.phase!=='play')return 'Önce taş çek';if(!p.pairsOpen)return 'Çift açmadın';const ts=a.tiles.map(id=>p.hand.find(x=>x.id===id));if(ts.length!==2||ts.some(x=>!x)||!okIsPair(ts[0],ts[1],g))return 'Geçerli bir çift seç';if(p.hand.length<=2)return 'Son taşı atarak bitirmelisin';ts.forEach(t=>p.hand.splice(p.hand.indexOf(t),1));g.table.push({owner:seat,tiles:ts,pair:true});g.laidThisTurn=true;return null;}
+  if(a.t==='laynew'){if(g.phase!=='play')return 'Önce taş çek';if(!p.opened||p.pairsOpen)return 'Önce seri/perle açmalısın';const ts=a.tiles.map(id=>p.hand.find(x=>x.id===id));if(ts.some(x=>!x)||!okMeld(ts,g))return 'Geçerli bir seri/per seç';if(p.hand.length-ts.length<1)return 'Son taşı atarak bitirmelisin';ts.forEach(t=>p.hand.splice(p.hand.indexOf(t),1));g.table.push({owner:seat,tiles:ts,pair:false});g.laidThisTurn=true;return null;}
   if(a.t==='swapokey'){if(g.phase!=='play'||!p.opened||p.pairsOpen)return 'Şimdi olmaz';const t=p.hand.find(x=>x.id===a.tile);const grp=g.table[a.group];if(!t||!grp)return 'Taş/grup yok';
     const wi=grp.tiles.findIndex(x=>okIdent(x,g).wild);if(wi<0)return 'Grupta okey yok';const trial=grp.tiles.slice();trial[wi]=t;if(!okMeld(trial,g))return 'Bu taş okeyin yerine geçmiyor';
     const w=grp.tiles[wi];grp.tiles=trial;p.hand.splice(p.hand.indexOf(t),1);p.hand.push(w);g.laidThisTurn=true;return null;}
@@ -5885,14 +5910,15 @@ function okAct(g,seat,a){ // returns error string or null
     if(g.took==='discard'&&!p.opened&&!p.bot)return 'Yerden aldın: bu el açmadan atamazsın';
     p.hand.splice(p.hand.indexOf(t),1);
     if(p.hand.length===0){return okFinish(g,seat,t);} // finishing tile goes face down
-    p.discards.push(t);okNext(g);return null;}
+    // cezalar: okey atmak +101, masaya işlenebilecek taşı atmak +101
+    if(okIdent(t,g).wild){p.pen=(p.pen||0)+101;g.lastPen={seat,why:'Okey attı +101'};}
+    else if(g.table.some(grp=>okAddToGroup(grp,t,g))){p.pen=(p.pen||0)+101;g.lastPen={seat,why:'İşlenebilecek taşı attı +101'};}
+    p.discards.push(t);g.eldenCandidate=null;okNext(g);return null;}
   return 'Bilinmeyen hamle';}
 function okPairsCan(hand,g){ // can open with pairs (>=5 pairs) from hand (not necessarily all tiles)
   const left=[...hand];let pairs=0;while(left.length>1){const a=left.shift();const j=left.findIndex(b=>okIsPair(a,b,g));if(j>=0){left.splice(j,1);pairs++;}}return pairs>=5;}
-function okFinish(g,seat,lastTile){const p=g.players[seat];if(!p.opened){ // "elden bitme": whole hand must be meldable — opening already required; treat empty hand after open as win
-  }
-  const withOkey=lastTile?okIdent(lastTile,g).wild:false;g.over=true;g.winner=seat;okFinishScore(g,seat,withOkey);g.phase='over';g.result={winner:seat,withOkey};return null;}
-function okEndNoTiles(g){g.over=true;g.winner=-1;g.players.forEach(p=>{p.score=okHandValue(p,g)*(p.opened?1:2);});g.phase='over';g.result={winner:-1};}
+function okFinish(g,seat,lastTile){const withOkey=lastTile?okIdent(lastTile,g).wild:false;const elden=g.eldenCandidate===seat;g.over=true;g.winner=seat;g.lastTile=lastTile;okFinishScore(g,seat,withOkey,elden);g.phase='over';return null;}
+function okEndNoTiles(g){g.over=true;g.winner=-1;g.players.forEach(p=>{const okeys=p.hand.filter(t=>okIdent(t,g).wild).length;p.score=okeys*101+(p.pen||0);});g.phase='over';g.result={winner:-1,tags:['Taş bitti']};}
 /* ---------- bots ---------- */
 function okBotTurn(g,seat){const p=g.players[seat];const L=OL();const left=g.players[(seat+3)%4];
   if(g.phase==='draw'){let took=false;const d=left.discards;if(d.length){const tile=d[d.length-1];const before=okBestMelds(p.hand,g,2500).v,after=okBestMelds([...p.hand,tile],g,2500).v;
@@ -5904,9 +5930,12 @@ function okBotTurn(g,seat){const p=g.players[seat];const L=OL();const left=g.pla
     const best=p.opened?null:okBestMelds(p.hand,g,6000);if(best&&best.v>=101&&(g.took==='discard'||Math.random()<L.bot+0.15)){const err=okAct(g,seat,{t:'open',groups:best.groups.map(gr=>gr.map(t=>t.id))});if(g.over)return;}
     else if(!p.opened){const pp=okPairsPartition(p.hand.filter(()=>true),g);/* full-hand pairs rare */}}
   // lay single tiles onto table
-  if(p.opened&&!p.pairsOpen){let moved=true,guard=0;while(moved&&guard++<30){moved=false;for(const t of p.hand.slice()){for(let gi=0;gi<g.table.length;gi++){if(p.hand.length===1)break;if(okAddToGroup(g.table[gi],t,g)){if(!okAct(g,seat,{t:'lay',tile:t.id,group:gi})){moved=true;break;}}}if(moved)break;}if(g.over)return;}}
-  // discard: tile contributing least
-  if(g.phase==='play'){const best=okBestMelds(p.hand,g,2500);const inMeld=new Set(best.groups.flat().map(t=>t.id));let cands=p.hand.filter(t=>!inMeld.has(t.id)&&!okIdent(t,g).wild);if(!cands.length)cands=p.hand.filter(t=>!okIdent(t,g).wild);if(!cands.length)cands=p.hand;
+  if(p.opened){let moved=true,guard=0;while(moved&&guard++<30){moved=false;for(const t of p.hand.slice()){if(p.hand.length<=1)break;for(let gi=0;gi<g.table.length;gi++){if(okAddToGroup(g.table[gi],t,g)){if(!okAct(g,seat,{t:'lay',tile:t.id,group:gi})){moved=true;break;}}}if(moved)break;}if(g.over)return;}}
+  // opened with sets: lay any new melds too (keep one tile)
+  if(p.opened&&!p.pairsOpen&&g.phase==='play'){const best=okBestMelds(p.hand,g,2500);for(const gr of best.groups){if(p.hand.length-gr.length<1)break;okAct(g,seat,{t:'laynew',tiles:gr.map(t=>t.id)});}}
+  if(p.pairsOpen&&g.phase==='play'){const pp=okPairsPartition(p.hand.filter(()=>true),g);const left=[...p.hand];let guard=0;while(left.length>2&&guard++<12){const a=left.shift();const j=left.findIndex(b=>okIsPair(a,b,g));if(j>=0){const b=left.splice(j,1)[0];if(p.hand.length>2)okAct(g,seat,{t:'laypair',tiles:[a.id,b.id]});}}}
+  // discard: tile contributing least; avoid penalty tiles
+  if(g.phase==='play'){const best=okBestMelds(p.hand,g,2500);const inMeld=new Set(best.groups.flat().map(t=>t.id));const penal=t=>okIdent(t,g).wild||g.table.some(grp=>okAddToGroup(grp,t,g));let cands=p.hand.filter(t=>!inMeld.has(t.id)&&!penal(t));if(!cands.length)cands=p.hand.filter(t=>!penal(t));if(!cands.length)cands=p.hand.filter(t=>!okIdent(t,g).wild);if(!cands.length)cands=p.hand;
     // prefer tiles with fewest neighbours in hand
     const score=t=>{const i=okIdent(t,g);let s=0;for(const o of p.hand){if(o===t)continue;const j=okIdent(o,g);if(j.wild)continue;if(j.n===i.n&&j.c!==i.c)s+=2;if(j.c===i.c&&Math.abs(j.n-i.n)<=2)s+=2-Math.abs(j.n-i.n)+1;}return s+(L.bot<0.7?Math.random()*2:0);};
     cands.sort((a,b)=>score(a)-score(b));okAct(g,seat,{t:'discard',tile:cands[0].id});}}
@@ -5919,7 +5948,7 @@ function okAfterMove(){const g=Ok.g;if(g.over){okOnOver();}okSyncRack();okBroadc
 function okOnOver(){const g=Ok.g;g.players.forEach((p,i)=>Ok.totals[i]+=p.score);clearInterval(Ok.timerH);
   const w=g.winner;const title=w<0?'TAŞ BİTTİ':(w===Ok.mySeat?'BİTTİN!':g.players[w].name.toUpperCase()+' BİTTİ');
   const sub=g.players.map((p,i)=>p.name+' '+p.score+(Ok.totals[i]!==p.score?' ('+Ok.totals[i]+')':'')).join(' · ');
-  setTimeout(()=>{showStep('osetup',{title:title+'<span style="font-size:.32em;letter-spacing:1px">'+sub+'</span>',text:(g.result&&g.result.withOkey?'Okey atarak bitti, puanlar ikiye katlandı. ':'')+(Ok.role==='guest'?'Yeni el için oda sahibini bekle.':'Yeni el için Başla.')});$('overlay').hidden=false;},1500);}
+  setTimeout(()=>{showStep('osetup',{title:title+'<span style="font-size:.32em;letter-spacing:1px">'+sub+'</span>',text:((g.result&&g.result.tags&&g.result.tags.length)?g.result.tags.join(' · ')+'. ':'')+(Ok.role==='guest'?'Yeni el için oda sahibini bekle.':'Yeni el için Başla.')});$('overlay').hidden=false;},1500);}
 function okStartTimer(){clearInterval(Ok.timerH);const g=Ok.g;if(!g||g.over)return;if(Ok.role==='guest')return;Ok.timer=OL().time;const el=$('otimer');el.textContent=Ok.timer;
   Ok.timerH=setInterval(()=>{Ok.timer--;el.textContent=Math.max(0,Ok.timer);okSend({t:'tick',s:Ok.timer,turn:g.turn});if(Ok.timer<=0){clearInterval(Ok.timerH);const p=g.players[g.turn];if(!p.bot){okBotTurn(g,g.turn);okAfterMove();}}},1000);}
 /* ---------- networking (host authoritative) ---------- */
@@ -5951,61 +5980,80 @@ function okDo(a){ // local player action (host applies directly, guest sends)
   const err=okAct(Ok.g,Ok.mySeat,a);if(err){okToast(err);return;}okAfterMove();}
 /* ---------- rack (local arrangement) ---------- */
 function okMyHand(){return Ok.g?Ok.g.players[Ok.mySeat].hand:[];}
-function okSyncRack(){const hand=okMyHand();const ids=new Set(hand.map(t=>t.id));if(Ok.rack.length!==22)Ok.rack=new Array(22).fill(null);
+function okSyncRack(){const hand=okMyHand();const ids=new Set(hand.map(t=>t.id));if(Ok.rack.length!==24)Ok.rack=new Array(24).fill(null);
   Ok.rack=Ok.rack.map(id=>ids.has(id)?id:null);for(const t of hand){if(!Ok.rack.includes(t.id)){const i=Ok.rack.indexOf(null);if(i>=0)Ok.rack[i]=t.id;}}
   Ok.sel=Ok.sel.filter(id=>ids.has(id));}
-function okSortRack(){const g=Ok.g,hand=okMyHand().slice();hand.sort((a,b)=>{const x=okIdent(a,g),y=okIdent(b,g);if(x.wild!==y.wild)return x.wild?1:-1;return x.c-y.c||x.n-y.n;});
-  // group: put melds first
-  const best=okBestMelds(hand,g,3000);const order=[];best.groups.forEach(gr=>{gr.forEach(t=>order.push(t.id));order.push(null);});hand.forEach(t=>{if(!order.includes(t.id))order.push(t.id);});
-  Ok.rack=new Array(22).fill(null);let i=0;for(const id of order){if(i>=22)break;if(id===null){if(i%11===10)continue;Ok.rack[i++]=null;continue;}Ok.rack[i++]=id;}
-  // compact if overflow
+function okSortRack(kind){const g=Ok.g,hand=okMyHand().slice();const order=[];
+  if(kind==='cift'){const left=hand.slice();while(left.length){const a=left.shift();const j=left.findIndex(b=>okIsPair(a,b,g)&&!okIdent(b,g).wild);if(j>=0){order.push(a.id,left.splice(j,1)[0].id,null);}else order.push(a.id);}}
+  else{const best=okBestMelds(hand,g,4000);best.groups.forEach(gr=>{gr.forEach(t=>order.push(t.id));order.push(null);});
+    const rest=hand.filter(t=>!order.includes(t.id)).sort((a,b)=>{const x=okIdent(a,g),y=okIdent(b,g);if(x.wild!==y.wild)return x.wild?1:-1;return x.c-y.c||x.n-y.n;});rest.forEach(t=>order.push(t.id));}
+  Ok.rack=new Array(24).fill(null);let i=0;for(const id of order){if(i>=24)break;if(id===null){if(i%12===11||i%12===0)continue;Ok.rack[i++]=null;continue;}Ok.rack[i++]=id;}
   const left=hand.filter(t=>!Ok.rack.includes(t.id));for(const t of left){const k=Ok.rack.indexOf(null);if(k>=0)Ok.rack[k]=t.id;}okRender();}
-/* ---------- UI ---------- */
-const oroot=$('okey'),otable=$('otable'),orack=$('orack'),oinfo=$('oinfo'),obtns=$('obtns');
+/* ---------- UI (101 Okey Plus düzeni) ---------- */
+const oroot=$('okey'),orack=$('orack'),oinfo=$('oinfo'),obtns=$('obtns');
 function okeyShow(on){oroot.hidden=!on;$('orackwrap').hidden=!on;$('touch').hidden=on;glc.style.visibility=on?'hidden':'';$('board').hidden=on;$('round').hidden=on;$('speed').hidden=on;if(on)$('hintlbl').innerHTML='TAŞA DOKUN · SEÇ · <b>SÜRÜKLE</b> · DİZ';}
-function okTileEl(t,g,small){const d=el('div','otile'+(small?' sm':''));if(t.fake){d.innerHTML='<span class="fk">★</span>';d.style.color='#555';}else{const w=g&&okIdent(t,g).wild;d.textContent=t.n;d.style.color=OK_COLORS[t.c];if(w)d.classList.add('wild');}d.dataset.id=t.id;return d;}
+function okTileEl(t,g,size){const d=el('div','otile'+(size?' '+size:''));if(t.fake){d.innerHTML='<span class="fk">✿</span>';d.style.color='#444';}else{const w=g&&okIdent(t,g).wild;d.textContent=t.n;d.style.color=OK_COLORS[t.c];if(w)d.classList.add('wild');}d.dataset.id=t.id;return d;}
+function okBackEl(){const d=el('div','otile back');return d;}
 function okToast(msg){const m=$('otoast');m.textContent=msg;m.classList.add('show');clearTimeout(okToast.h);okToast.h=setTimeout(()=>m.classList.remove('show'),1800);}
-function okRender(){const g=Ok.g;if(!g)return;const me=Ok.mySeat,myTurn=g.turn===me&&!g.over;
-  // seats
-  const seatsEl=$('oseats');seatsEl.innerHTML='';for(let k=1;k<4;k++){const s=(me+k)%4,p=g.players[s];const d=el('div','oseat'+(g.turn===s?' turn':'')+(k===3?' left':k===1?' right':' top'));
-    d.innerHTML='<b>'+p.name+'</b><span>'+p.hand.length+' taş'+(p.opened?' · açtı':'')+'</span>';const dz=el('div','odisc');p.discards.slice(-1).forEach(t=>dz.appendChild(okTileEl(t,g,true)));d.appendChild(dz);seatsEl.appendChild(d);}
-  // center: indicator, pile, my discards
-  const c=$('ocenter');c.innerHTML='';const ind=el('div','oind');ind.innerHTML='<span>GÖSTERGE</span>';ind.appendChild(okTileEl(g.indicator,g,true));const pile=el('div','opile'+(myTurn&&g.phase==='draw'?' can':''));pile.innerHTML='<b>'+g.pile.length+'</b><span>YERDEN ÇEK</span>';pile.addEventListener('click',()=>{if(myTurn&&g.phase==='draw')okDo({t:'draw'});});
-  const leftP=g.players[(me+3)%4];const take=el('div','otake'+(myTurn&&g.phase==='draw'&&leftP.discards.length?' can':''));take.innerHTML='<span>SOLDAN AL</span>';if(leftP.discards.length)take.appendChild(okTileEl(leftP.discards[leftP.discards.length-1],g,true));take.addEventListener('click',()=>{if(myTurn&&g.phase==='draw')okDo({t:'take'});});
-  const mine=el('div','omine');mine.innerHTML='<span>ATTIKLARIN</span>';g.players[me].discards.slice(-4).forEach(t=>mine.appendChild(okTileEl(t,g,true)));
-  c.append(take,pile,ind,mine);
-  // table groups
-  otable.innerHTML='';g.table.forEach((grp,gi)=>{const d=el('div','ogroup'+(grp.pair?' pair':''));d.title=g.players[grp.owner].name;grp.tiles.forEach(t=>d.appendChild(okTileEl(t,g,true)));const tag=el('i',null,g.players[grp.owner].name.slice(0,6));d.appendChild(tag);
+function okSeatTag(p,s,g,pos){const d=el('div','oseat '+pos+(g.turn===s&&!g.over?' turn':''));
+  d.innerHTML='<span class="av">'+(p.bot?'🤖':'🙂')+'</span><span class="nm">'+p.name+'</span><span class="cnt">'+p.hand.length+'</span>'+(p.opened?'<span class="badge">'+(p.pairsOpen?'ÇİFT':'AÇTI')+'</span>':'');return d;}
+function okDiscardStack(p,g,cls,label,clickable,onclick){const d=el('div','ocorner '+cls+(clickable?' can':''));const lab=el('span','lab',label);d.appendChild(lab);const last=p.discards.slice(-3);
+  if(!last.length){d.appendChild(el('div','oslotghost'));}else{const st=el('div','stack');last.forEach((t,i)=>{const te=okTileEl(t,g,'md');te.style.setProperty('--i',i);st.appendChild(te);});d.appendChild(st);}
+  if(onclick)d.addEventListener('click',onclick);return d;}
+function okRender(){const g=Ok.g;if(!g)return;const me=Ok.mySeat,myTurn=g.turn===me&&!g.over;const P=k=>g.players[(me+k)%4];
+  const felt=$('ofelt');felt.innerHTML='';
+  // seats: left (k=3), top (k=2), right (k=1)
+  felt.appendChild(okSeatTag(P(2),(me+2)%4,g,'top'));felt.appendChild(okSeatTag(P(3),(me+3)%4,g,'left'));felt.appendChild(okSeatTag(P(1),(me+1)%4,g,'right'));
+  // discard corners: each player's discards sit at the corner on their right-hand side (clockwise: me→bottom-right, right player→top-right, top→top-left, left→bottom-left)
+  const canTake=myTurn&&g.phase==='draw'&&P(3).discards.length>0;
+  felt.appendChild(okDiscardStack(P(2),g,'tl','',false));felt.appendChild(okDiscardStack(P(1),g,'tr','',false));
+  felt.appendChild(okDiscardStack(P(3),g,'bl',canTake?'AL':'',canTake,()=>{if(canTake)okDo({t:'take'});}));
+  felt.appendChild(okDiscardStack(P(0),g,'br','',myTurn&&g.phase==='play'&&Ok.sel.length===1,()=>{if(myTurn&&g.phase==='play'&&Ok.sel.length===1){okDo({t:'discard',tile:Ok.sel[0]});Ok.sel=[];}}));
+  // center: pile + indicator
+  const c=el('div','ocore');const pile=el('div','opile'+(myTurn&&g.phase==='draw'?' can':''));pile.appendChild(okBackEl());const cnt=el('b',null,g.pile.length);pile.appendChild(cnt);pile.addEventListener('click',()=>{if(myTurn&&g.phase==='draw')okDo({t:'draw'});});
+  const ind=el('div','oindw');ind.appendChild(okTileEl(g.indicator,g,'md'));c.append(pile,ind);felt.appendChild(c);
+  // meld panels
+  const left=el('div','opanel l'),right=el('div','opanel r');g.table.forEach((grp,gi)=>{const d=el('div','ogroup'+(grp.pair?' pair':''));grp.tiles.forEach(t=>d.appendChild(okTileEl(t,g,'md')));
+    const canLay=myTurn&&g.phase==='play'&&Ok.sel.length===1&&g.players[me].opened;if(canLay){const t=okMyHand().find(x=>x.id===Ok.sel[0]);if(t&&(okAddToGroup(grp,t,g)||grp.tiles.some(x=>okIdent(x,g).wild)))d.classList.add('can');}
     d.addEventListener('click',()=>{if(!myTurn||g.phase!=='play'||Ok.sel.length!==1)return;const id=Ok.sel[0];const t=okMyHand().find(x=>x.id===id);
-      if(grp.tiles.some(x=>okIdent(x,g).wild)&&!okIdent(t,g).wild&&!okAddToGroup(grp,t,g)){okDo({t:'swapokey',tile:id,group:gi});}else okDo({t:'lay',tile:id,group:gi});Ok.sel=[];});otable.appendChild(d);});
-  // info + buttons
-  const p=g.players[me];let info='';if(g.over)info='El bitti.';else if(!myTurn)info='<b>'+g.players[g.turn].name+'</b> oynuyor…';else if(g.phase==='draw')info='<b>Sıra sende.</b> Yerden çek ya da soldan al.';else info=p.opened?'İşle veya bir taş seçip <b>At</b>.':'Açmak için grupları seç (toplam ≥101) ya da taş seçip <b>At</b>.';
+      if(!okAddToGroup(grp,t,g)&&grp.tiles.some(x=>okIdent(x,g).wild)&&!okIdent(t,g).wild)okDo({t:'swapokey',tile:id,group:gi});else okDo({t:'lay',tile:id,group:gi});Ok.sel=[];});
+    (gi%2?right:left).appendChild(d);});
+  felt.append(left,right);
+  // status line
+  const p=g.players[me];let info='';
+  if(g.over)info='El bitti.';else if(!myTurn)info='<b>'+g.players[g.turn].name+'</b> oynuyor…';else if(g.phase==='draw')info='<b>Sıra sende:</b> ortadan çek ya da soldaki taşı al.';
+  else if(g.took==='discard'&&!p.opened)info='Yerden aldın: bu el <b>açmalısın</b>.';else info=p.opened?'İşle (taş seç → masadaki gruba dokun) ya da taş seçip <b>At</b>.':'Açmak için grupları seç ya da hiç seçmeden <b>Aç</b>; yoksa taş seçip <b>At</b>.';
   oinfo.innerHTML=info;
+  // buttons
   obtns.innerHTML='';const mk=(txt,cls,fn,dis)=>{const b=el('button','obtn '+(cls||''),txt);b.disabled=!!dis;b.addEventListener('click',fn);obtns.appendChild(b);return b;};
   const selTiles=Ok.sel.map(id=>okMyHand().find(t=>t.id===id)).filter(Boolean);
-  mk('Diz','',okSortRack);
   if(myTurn&&g.phase==='play'){
     if(!p.opened){let opn=null,pairs=false;if(selTiles.length>=3){const part=okPartition(selTiles,g,30000);if(part&&okOpeningValue(part,g)>=101)opn=part;else{const pp=okPairsPartition(selTiles,g);if(pp&&pp.length>=5){opn=pp;pairs=true;}}}
       else if(selTiles.length===0){const best=okBestMelds(p.hand,g,6000);if(best.v>=101)opn=best.groups;}
-      const val=opn&&!pairs?okOpeningValue(opn,g):0;mk(opn?(pairs?'Çift Aç':'Aç ('+val+')'):'Aç','primary',()=>{okDo({t:'open',groups:opn.map(gr=>gr.map(t=>t.id)),pairs});Ok.sel=[];},!opn);}
-    else if(p.pairsOpen){mk('Çift Koy','primary',()=>{okDo({t:'laypair',tiles:Ok.sel});Ok.sel=[];},!(selTiles.length===2&&okIsPair(selTiles[0],selTiles[1],g)));}
-    const last=p.hand.length===1;mk(last&&selTiles.length===1?'Bitir':'At','danger',()=>{okDo({t:'discard',tile:Ok.sel[0]});Ok.sel=[];},selTiles.length!==1);}
+      const val=opn&&!pairs?okOpeningValue(opn,g):(selTiles.length>=3?(okPartition(selTiles,g,30000)?okOpeningValue(okPartition(selTiles,g,30000),g):0):0);
+      mk(opn?(pairs?'ÇİFT AÇ':'AÇ · '+val):(val?'AÇ · '+val+'/101':'AÇ'),'primary',()=>{okDo({t:'open',groups:opn.map(gr=>gr.map(t=>t.id)),pairs});Ok.sel=[];},!opn);}
+    else if(p.pairsOpen){mk('ÇİFT KOY','primary',()=>{okDo({t:'laypair',tiles:Ok.sel});Ok.sel=[];},!(selTiles.length===2&&okIsPair(selTiles[0],selTiles[1],g)));}
+    else{const ok3=selTiles.length>=3&&okMeld(selTiles,g);mk('YENİ GRUP','primary',()=>{okDo({t:'laynew',tiles:Ok.sel});Ok.sel=[];},!ok3);}
+    const last=p.hand.length===1;mk(last?'BİTİR':'AT','danger',()=>{okDo({t:'discard',tile:Ok.sel[0]});Ok.sel=[];},selTiles.length!==1);}
+  else if(myTurn&&g.phase==='draw'){mk('ÇEK','primary',()=>okDo({t:'draw'}));if(canTake)mk('SOLDAN AL','',()=>okDo({t:'take'}));}
   // rack
   orack.innerHTML='';const hand=okMyHand();Ok.rack.forEach((id,i)=>{const slot=el('div','oslot');slot.dataset.i=i;const t=id!=null?hand.find(x=>x.id===id):null;if(t){const te=okTileEl(t,g);if(Ok.sel.includes(t.id))te.classList.add('sel');slot.appendChild(te);}orack.appendChild(slot);});
   okUpdateHud();}
-function okUpdateHud(){const g=Ok.g;$('ohand').textContent='EL '+Ok.hand;$('ookey').innerHTML='';if(g){const o=okTileEl({id:-1,c:g.okey.c,n:g.okey.n,fake:false},null,true);o.classList.add('wild');$('ookey').appendChild(o);}$('oscore').textContent=Ok.totals[Ok.mySeat];}
-// rack interaction: tap = select, drag = move
+function okUpdateHud(){const g=Ok.g;$('ohand').textContent='EL '+Ok.hand;$('ookey').innerHTML='';if(g){const o=okTileEl({id:-1,c:g.okey.c,n:g.okey.n,fake:false},null,'sm');o.classList.add('wild');$('ookey').appendChild(o);}$('oscore').textContent=Ok.totals[Ok.mySeat];
+  const sb=$('oscores');sb.innerHTML='';if(g){g.players.forEach((p,i)=>{const r=el('div','row'+(i===Ok.mySeat?' me':''));r.innerHTML='<span>'+p.name+'</span><b>'+Ok.totals[i]+(p.pen?' <i>+'+p.pen+'</i>':'')+'</b>';sb.appendChild(r);});}}
+// rack: 2 rows x 13; tap = select, drag = move
+const RACK_N=24;
 (function rackDrag(){let st=null;
   orack.addEventListener('pointerdown',e=>{const tile=e.target.closest('.otile');if(!tile)return;st={id:+tile.dataset.id,x:e.clientX,y:e.clientY,moved:false,ghost:null,el:tile};orack.setPointerCapture(e.pointerId);});
   orack.addEventListener('pointermove',e=>{if(!st)return;const dx=e.clientX-st.x,dy=e.clientY-st.y;if(!st.moved&&Math.hypot(dx,dy)>8){st.moved=true;st.ghost=st.el.cloneNode(true);st.ghost.classList.add('ghost');document.body.appendChild(st.ghost);st.el.classList.add('lift');}
-    if(st.moved){st.ghost.style.transform='translate('+(e.clientX-26)+'px,'+(e.clientY-40)+'px)';}});
+    if(st.moved){st.ghost.style.transform='translate('+(e.clientX-24)+'px,'+(e.clientY-44)+'px)';}});
   const end=e=>{if(!st)return;if(st.moved){st.ghost.remove();st.el.classList.remove('lift');const target=document.elementFromPoint(e.clientX,e.clientY);const slot=target&&target.closest('.oslot');
-      if(slot){const to=+slot.dataset.i,from=Ok.rack.indexOf(st.id);if(to!==from){const occupant=Ok.rack[to];Ok.rack[to]=st.id;Ok.rack[from]=null;if(occupant!=null){// shift occupant to next free slot to the right (or left)
-            let k=to+1;while(k<22&&Ok.rack[k]!=null)k++;if(k>=22){k=to-1;while(k>=0&&Ok.rack[k]!=null)k--;}if(k>=0&&k<22)Ok.rack[k]=occupant;else Ok.rack[from]=occupant;}}}
+      if(slot){const to=+slot.dataset.i,from=Ok.rack.indexOf(st.id);if(to!==from){const occupant=Ok.rack[to];Ok.rack[to]=st.id;Ok.rack[from]=null;if(occupant!=null){let k=to+1;while(k<RACK_N&&Ok.rack[k]!=null)k++;if(k>=RACK_N){k=to-1;while(k>=0&&Ok.rack[k]!=null)k--;}if(k>=0&&k<RACK_N)Ok.rack[k]=occupant;else Ok.rack[from]=occupant;}}}
       okRender();}
     else{const i=Ok.sel.indexOf(st.id);if(i>=0)Ok.sel.splice(i,1);else Ok.sel.push(st.id);okRender();}
     st=null;};
   orack.addEventListener('pointerup',end);orack.addEventListener('pointercancel',end);})();
+$('osortSeri').addEventListener('click',()=>okSortRack('seri'));$('osortCift').addEventListener('click',()=>okSortRack('cift'));
 /* ---------- menu wiring ---------- */
 function okeySetMode(m){Ok.mode=m;document.querySelectorAll('#omodes button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.om===m));$('oonline').hidden=m!=='online';}
 document.querySelectorAll('#omodes button').forEach(b=>b.addEventListener('click',()=>{okeySetMode(b.dataset.om);showStep('osetup');}));
@@ -6017,8 +6065,8 @@ $('ojoin').addEventListener('click',()=>{const code=($('ocode').value||'').trim(
   okConnect(code,'guest',(ok,err)=>{$('opeer2').textContent=ok?'Odaya girildi, koltuk bekleniyor…':'Bağlanılamadı: '+err;if(ok){$('start').hidden=true;}});});
 $('oshare').addEventListener('click',()=>{if(!Ok.code){$('opeer').textContent='Önce oda kur';return;}const txt='101 Okey oynayalım! Fold Arena oda kodu: '+Ok.code+'\nUygulama: https://github.com/Dostcity/HD/releases/download/fold-latest/FoldPenalti.apk';
   const a=document.createElement('a');a.href='https://wa.me/?text='+encodeURIComponent(txt);a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();});
-if(SIM)window.__okAuto=function(n){const out=[];for(let i=0;i<n&&Ok.g&&!Ok.g.over;i++){clearTimeout(Ok.botH);clearInterval(Ok.timerH);const g=Ok.g;try{okBotTurn(g,g.turn);}catch(e){return {error:String(e),stack:e.stack};}g.players.forEach((p,i)=>{if(p.hand.length>22)out.push('hand>22 seat'+i);});okSyncRack();okRender();}
-  const g=Ok.g;clearTimeout(Ok.botH);clearInterval(Ok.timerH);return {over:g.over,winner:g.winner,scores:g.players.map(p=>p.score),opened:g.players.map(p=>p.opened),pile:g.pile.length,table:g.table.length,hands:g.players.map(p=>p.hand.length),notes:out};};
+if(typeof SIM!=='undefined'&&SIM)window.__okAuto=function(n){const out=[];for(let i=0;i<n&&Ok.g&&!Ok.g.over;i++){clearTimeout(Ok.botH);clearInterval(Ok.timerH);const g=Ok.g;try{okBotTurn(g,g.turn);}catch(e){return {error:String(e),stack:e.stack};}g.players.forEach((p,i)=>{if(p.hand.length>22)out.push('hand>22 seat'+i);});okSyncRack();okRender();}
+  const g=Ok.g;clearTimeout(Ok.botH);clearInterval(Ok.timerH);if(g.over)okOnOver();return {over:g.over,winner:g.winner,scores:g.players.map(p=>p.score),opened:g.players.map(p=>p.opened),pile:g.pile.length,table:g.table.length,hands:g.players.map(p=>p.hand.length),tags:g.result&&g.result.tags,notes:out};};
 function okeyNewGame(){okeyShow(true);if(Ok.mode==='solo'){Ok.role='host';Ok.peers={};Ok.mySeat=0;if(Ok.net){try{Ok.net.end(true)}catch(e){}Ok.net=null;Ok.connected=false;}}
   if(Ok.role==='guest')return;okHostStart();}
 
