@@ -50,8 +50,16 @@ public class MainActivity extends Activity {
         s.setSupportZoom(false);
         s.setBuiltInZoomControls(false);
         s.setCacheMode(WebSettings.LOAD_DEFAULT);
+        s.setJavaScriptCanOpenWindowsAutomatically(true);
+        s.setSupportMultipleWindows(false);
         web.setWebViewClient(new WebViewClient() {
             @Override public void onPageFinished(WebView view, String url) { pushHinge(true); }
+            @Override public boolean shouldOverrideUrlLoading(WebView view, android.webkit.WebResourceRequest req) {
+                android.net.Uri u = req.getUrl();
+                if ("file".equals(u.getScheme())) return false;
+                try { startActivity(new android.content.Intent(android.content.Intent.ACTION_VIEW, u)); } catch (Exception ignored) { }
+                return true; // WhatsApp / tarayıcı linkleri dışarıda açılır
+            }
         });
         web.setWebChromeClient(new WebChromeClient());
         web.setLayerType(View.LAYER_TYPE_HARDWARE, null);
