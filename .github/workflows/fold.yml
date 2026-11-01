@@ -1,0 +1,47 @@
+name: Fold Penalti APK
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'FoldPenalti/**'
+      - '.github/workflows/fold.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repoyu al
+        uses: actions/checkout@v4
+
+      - name: JDK 17 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Debug APK derle
+        working-directory: FoldPenalti
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+          cp app/build/outputs/apk/debug/app-debug.apk FoldPenalti.apk
+
+      - name: APK artifact yukle
+        uses: actions/upload-artifact@v4
+        with:
+          name: FoldPenalti-apk
+          path: FoldPenalti/FoldPenalti.apk
+          if-no-files-found: error
+
+      - name: Release yayinla
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: fold-latest
+          name: Fold Penalti (APK)
+          body: "Telefondan kur: FoldPenalti.apk dosyasina dokun. Flex modu icin telefonu yarim kapat."
+          files: FoldPenalti/FoldPenalti.apk
