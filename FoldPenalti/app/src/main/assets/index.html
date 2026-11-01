@@ -49,6 +49,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);overf
 #msg.show{opacity:1;transform:scale(1)}
 #msg.bad{color:var(--bad);text-shadow:0 4px 0 #3a0a10,0 0 40px rgba(255,77,94,.5)}
 #msg.neutral{color:#fff;text-shadow:0 4px 0 #222,0 0 30px rgba(255,255,255,.4)}
+#msg.good{color:var(--good);text-shadow:0 4px 0 #0c3a1e,0 0 40px rgba(61,220,132,.55);font-size:clamp(34px,10vw,80px)}
 #pad{position:relative;min-height:0;background:var(--panel);border-top:2px solid var(--line);display:grid;grid-template-rows:auto 1fr}
 #bar{display:flex;gap:8px;padding:8px 12px 0;align-items:center;justify-content:space-between}
 #bar .lbl{font-family:var(--display);font-size:20px;letter-spacing:3px;color:var(--muted)}
@@ -5686,7 +5687,7 @@ function updateHud(){lscoreL.textContent=Lg.players[0].score;lscoreR.textContent
 function turnText(){if(Lg.mode==='solo')return '';if(Lg.mode==='duel')return 'Sıra: <b>'+Lg.players[Lg.turn].name+'</b>. ';return myTurn()?'<b>Sıra sende.</b> ':'<b>'+Lg.players[Lg.turn].name+'</b> düşünüyor… ';}
 function myTurn(){if(Lg.mode==='solo')return true;if(Lg.mode==='duel')return true;return Lg.turn===(Lg.role==='host'?0:1);}
 function startWord(w){Lg.word=w;Lg.len=w.length;Lg.rows=[];Lg.cur='';Lg.attempt=0;Lg.maxAttempts=LL().guesses;Lg.known=Array(w.length).fill('');Lg.known[0]=w[0];Lg.phase='play';Lg.busy=false;
-  renderBoard();updateHud();startTimer();
+  renderBoard();updateHud();startTimer();if(Lg.mode!=='online'||Lg.role==='host')turnBanner();
   setStatus(turnText()+'İlk harf verildi, '+Lg.len+' harfli kelimeyi bul.');}
 let timerH=null;
 function startTimer(){stopTimer();if(Lg.mode==='online'&&Lg.role!=='host'){Lg.timerOn=false;return;}Lg.timer=LL().time;Lg.timerOn=true;ltimer.textContent=Lg.timer;ltimer.classList.remove('low');
@@ -5695,7 +5696,8 @@ function stopTimer(){if(timerH){clearInterval(timerH);timerH=null;}Lg.timerOn=fa
 function onTimeout(){if(Lg.phase!=='play')return;SFX.groan();
   if(Lg.mode==='solo'){Lg.rows.push({word:Lg.cur.padEnd(Lg.len,' '),fb:Array(Lg.len).fill('x'),timeout:true});Lg.attempt++;Lg.cur='';say('SÜRE','bad');afterGuess(false);}
   else{say('SÜRE','bad');setStatus('<b>'+Lg.players[Lg.turn].name+'</b> süreyi doldurdu, sıra geçti.');Lg.cur='';passTurn();}}
-function passTurn(){Lg.turn=1-Lg.turn;Lg.cur='';renderBoard();updateHud();if(Lg.phase==='play'){startTimer();if(Lg.mode==='online')netState();setTimeout(()=>{if(Lg.phase==='play')setStatus(turnText()+'Kalan hak: '+(Lg.maxAttempts-Lg.attempt));},900);}}
+function turnBanner(){if(Lg.mode==='solo')return;const mine=Lg.mode==='duel'?true:myTurn();say(Lg.mode==='duel'?'SIRA: '+TR_UP(Lg.players[Lg.turn].name):(mine?'SIRA SENDE':'SIRA: '+TR_UP(Lg.players[Lg.turn].name)),'good');if(mine&&navigator.vibrate)try{navigator.vibrate([30,40,30])}catch(e){}}
+function passTurn(){Lg.turn=1-Lg.turn;Lg.cur='';renderBoard();updateHud();turnBanner();if(Lg.phase==='play'){startTimer();if(Lg.mode==='online')netState();setTimeout(()=>{if(Lg.phase==='play')setStatus(turnText()+'Kalan hak: '+(Lg.maxAttempts-Lg.attempt));},900);}}
 function lingoKey(k){if(Lg.phase!=='play'||Lg.busy)return;
   if(Lg.mode==='online'&&!myTurn())return;
   if(Lg.mode==='online'&&Lg.role!=='host'){ // guest: edit locally, submit to host
@@ -5709,9 +5711,9 @@ function shake(){const row=lboard.querySelector('.lrow.active');if(row){row.clas
 function submitGuess(g,who){ // authoritative (solo, duel, online host)
   if(Lg.phase!=='play')return;
   if(g.length!==Lg.len){shake();setStatus('Kelime '+Lg.len+' harfli olmalı.','warn');return;}
-  if(g[0]!==Lg.word[0]){shake();setStatus('İlk harf <b>'+TR_UP(Lg.word[0])+'</b> olmalı.','warn');if(Lg.mode==='online')netSend({t:'reject',w:g,why:'first'});return;}
+  if(g[0]!==Lg.word[0]){shake();setStatus('İlk harf <b>'+TR_UP(Lg.word[0])+'</b> olmalı.','warn');if(Lg.mode==='online')netSend({t:'reject',w:g,why:'first'});setTimeout(()=>{Lg.cur='';renderBoard();},450);return;}
   if(!VALID.has(g)){shake();SFX.groan();setStatus('<b>'+TR_UP(g)+'</b> sözlükte yok.','warn');if(Lg.mode==='online')netSend({t:'reject',w:g,why:'dict'});
-    if(Lg.mode!=='solo'){Lg.rows.push({word:g,fb:Array(Lg.len).fill('x'),invalid:true});Lg.attempt++;Lg.cur='';afterGuess(false,true);}return;}
+    if(Lg.mode!=='solo'){Lg.rows.push({word:g,fb:Array(Lg.len).fill('x'),invalid:true});Lg.attempt++;Lg.cur='';afterGuess(false,true);}else{setTimeout(()=>{Lg.cur='';renderBoard();},450);}return;}
   const fb=feedback(g,Lg.word);Lg.rows.push({word:g,fb,by:who});fb.forEach((f,i)=>{if(f==='g')Lg.known[i]=g[i];});Lg.attempt++;Lg.cur='';
   const win=g===Lg.word;afterGuess(win);}
 function afterGuess(win,invalid){stopTimer();Lg.busy=true;renderBoard();
@@ -5740,9 +5742,9 @@ const BROKERS=['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mq
 function topic(){return 'foldarena/lingo/v1/'+Lg.code;}
 function netSend(m){if(!Lg.net||!Lg.connected)return;m.from=Lg.myId;try{Lg.net.publish(topic(),JSON.stringify(m),{qos:1});}catch(e){}}
 function netState(){if(Lg.role!=='host')return;netSend({t:'state',s:{round:Lg.round,word:Lg.word,rows:Lg.rows,attempt:Lg.attempt,maxAttempts:Lg.maxAttempts,turn:Lg.turn,players:Lg.players,known:Lg.known,phase:Lg.phase,len:Lg.len,wordsPerGame:Lg.wordsPerGame}});}
-function applyState(s){Object.assign(Lg,{round:s.round,word:s.word,rows:s.rows,attempt:s.attempt,maxAttempts:s.maxAttempts,turn:s.turn,known:s.known,phase:s.phase,len:s.len,wordsPerGame:s.wordsPerGame});
+function applyState(s){const prevTurn=Lg.turn,prevPhase=Lg.phase,prevRound=Lg.round;Object.assign(Lg,{round:s.round,word:s.word,rows:s.rows,attempt:s.attempt,maxAttempts:s.maxAttempts,turn:s.turn,known:s.known,phase:s.phase,len:s.len,wordsPerGame:s.wordsPerGame});
   Lg.players[0].score=s.players[0].score;Lg.players[1].score=s.players[1].score;Lg.players[0].name=s.players[0].name;Lg.players[1].name=s.players[1].name;Lg.busy=false;if(Lg.cur.length>Lg.len)Lg.cur='';
-  renderBoard();updateHud();
+  renderBoard();updateHud();if(s.phase==='play'&&(s.turn!==prevTurn||prevPhase!=='play'||s.round!==prevRound))turnBanner();
   if(s.phase==='play')setStatus(turnText()+'İlk harf '+TR_UP(s.word[0])+'. Kalan hak: '+(s.maxAttempts-s.attempt));
   else if(s.phase==='reveal')setStatus('Kelime <b>'+TR_UP(s.word)+'</b>');
   else if(s.phase==='over')endGame();}
@@ -5765,7 +5767,7 @@ function netOnMessage(m){
   }else{
     if(m.t==='state')applyState(m.s);
     else if(m.t==='tick'){ltimer.textContent=Math.max(0,m.s);ltimer.classList.toggle('low',m.s<=5);}
-    else if(m.t==='reject'){Lg.busy=false;shake();setStatus(m.why==='first'?'İlk harf yanlış.':'<b>'+TR_UP(m.w)+'</b> sözlükte yok.','warn');}
+    else if(m.t==='reject'){Lg.busy=false;shake();setStatus(m.why==='first'?'İlk harf yanlış.':'<b>'+TR_UP(m.w)+'</b> sözlükte yok.','warn');setTimeout(()=>{Lg.cur='';renderBoard();},450);}
     else if(m.t==='rejected'){Lg.busy=false;}
   }}
 function makeCode(){const a='ABCDEFGHJKLMNPRSTUVYZ';let s='';for(let i=0;i<4;i++)s+=a[Math.floor(Math.random()*a.length)];return s;}
