@@ -162,7 +162,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);overf
 /* ---- 101 Okey (Plus düzeni, yatay) ---- */
 body.oland #pad{display:none}body.oland #app{grid-template-rows:1fr}
 body.oland #overlay{position:fixed;inset:0;z-index:40}
-#okey{position:fixed;inset:0;z-index:15;display:grid;grid-template-rows:auto 1fr auto;gap:4px;--th:clamp(38px,min(13vh,6vw),84px);--tm:clamp(22px,min(11vh,5.2vw),66px);
+#okey{position:fixed;inset:0;z-index:15;display:grid;grid-template-rows:auto 1fr auto;gap:4px;--th:clamp(34px,min(11.5vh,5.2vw),72px);--tm:clamp(20px,min(9vh,4.2vw),52px);
   padding:max(4px,env(safe-area-inset-top,0px)) max(6px,env(safe-area-inset-right,0px)) max(4px,env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));
   background:radial-gradient(120% 90% at 50% 40%,#1b4f86 0%,#123a68 50%,#0b2548 100%);color:#eaf2ff;font-family:var(--body)}
 #okey[hidden]{display:none!important}
@@ -264,7 +264,11 @@ body.oland #overlay{position:fixed;inset:0;z-index:40}
 .ocol.btns{gap:5px}
 .obtn{min-height:34px;font-size:10px;letter-spacing:.6px;padding:2px 4px;line-height:1.1;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .obtn small{font-size:9px;font-weight:800;opacity:.75;letter-spacing:0}
-#oinfo{font-size:11px;color:#9fb6d3;min-height:1.2em}
+#oinfo{font-size:11px;color:#9fb6d3;min-height:1.2em;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 10px;width:min(100%,calc(15 * var(--th) * .72 + 90px));margin:0 auto;box-sizing:border-box}
+#oinfo .hint{flex:1;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#oinfo .stat{flex:none;font:800 11px var(--body);letter-spacing:1px;text-transform:uppercase;color:#dbe8ff;background:rgba(0,0,0,.35);border-radius:6px;padding:2px 8px;border:1px solid rgba(255,255,255,.1)}
+#oinfo .stat b{color:#ffd60a}
+#oinfo .stat.ok b{color:#3ddc84}
 #oinfo b{color:#ffd60a}
 #otoast{position:absolute;left:50%;bottom:calc(var(--th)*2 + 40px);transform:translateX(-50%) translateY(20px);background:rgba(6,10,20,.92);color:var(--fg);padding:8px 14px;border-radius:10px;font:600 13px var(--body);opacity:0;transition:.2s;pointer-events:none;max-width:70%;text-align:center;z-index:5}
 #otoast.show{opacity:1;transform:translateX(-50%)}
@@ -6207,7 +6211,11 @@ function okRender(){const g=Ok.g;if(!g)return;const me=Ok.mySeat,myTurn=g.turn==
       else{const pp=okPairsPartition(selTiles,g);info=pre+(pp&&pp.length>=5?pp.length+' çift → ÇİFT AÇ':'Seçilenler seri/per değil');}}
     else if(!p.opened)info=pre+'Açmak için grupları seç (ya da SERİ AÇ en iyisini açar) · taşı sağ alt köşeye sürükle = at';
     else{const nb=okMeldBlocks().length;info=(nb?nb+' hazır grup → TAŞLARI İŞLE · ':'')+'taşı gruba sürükle = işle · sağ alt köşeye = at';}}
-  oinfo.innerHTML=info;
+  const handSum=okHandValue(p,g);let rightStat='';
+  if(!p.opened){if(selTiles.length){const part=okPartition(selTiles,g,30000);const v=part?okOpeningValue(part,g):0;rightStat='<span class="stat'+(v>=101?' ok':'')+'">Seçili <b>'+v+'</b>/101</span>';}
+    else rightStat='<span class="stat'+(best.v>=101?' ok':'')+'">Açılış <b>'+best.v+'</b>/101</span>';}
+  else rightStat='<span class="stat ok">Açıldı</span>';
+  oinfo.innerHTML='<span class="stat">Eldeki toplam <b>'+handSum+'</b></span><span class="hint">'+info+'</span>'+rightStat;
   // sabit buton sütunu
   obtns.innerHTML='';const mk=(txt,cls,fn,dis,sub)=>{const b=el('button','obtn '+(cls||''));b.innerHTML=txt+(sub?'<small>'+sub+'</small>':'');b.disabled=!!dis;b.addEventListener('click',fn);obtns.appendChild(b);return b;};
   const play=myTurn&&g.phase==='play';
