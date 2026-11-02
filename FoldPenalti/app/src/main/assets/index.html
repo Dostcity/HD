@@ -162,7 +162,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);overf
 /* ---- 101 Okey (Plus düzeni, yatay) ---- */
 body.oland #pad{display:none}body.oland #app{grid-template-rows:1fr}
 body.oland #overlay{position:fixed;inset:0;z-index:40}
-#okey{position:fixed;inset:0;z-index:15;display:grid;grid-template-rows:auto 1fr auto;gap:4px;--th:clamp(40px,min(15vh,7vw),100px);--tm:clamp(26px,min(11vh,5.2vw),66px);
+#okey{position:fixed;inset:0;z-index:15;display:grid;grid-template-rows:auto 1fr auto;gap:4px;--th:clamp(38px,min(13vh,6vw),84px);--tm:clamp(22px,min(11vh,5.2vw),66px);
   padding:max(4px,env(safe-area-inset-top,0px)) max(6px,env(safe-area-inset-right,0px)) max(4px,env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));
   background:radial-gradient(120% 90% at 50% 40%,#1b4f86 0%,#123a68 50%,#0b2548 100%);color:#eaf2ff;font-family:var(--body)}
 #okey[hidden]{display:none!important}
@@ -180,7 +180,7 @@ body.oland #overlay{position:fixed;inset:0;z-index:40}
 .oedge{display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:4px;min-height:0}
 #ofelt{position:relative;min-height:0;border-radius:10px;background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,.3));box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),inset 0 0 30px rgba(0,0,0,.35);display:flex;gap:6px;padding:34px 6px 6px;overflow:hidden}
 #ofelt::before{content:"101";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:700 clamp(60px,22vh,160px) var(--display);color:rgba(255,255,255,.06);letter-spacing:6px;pointer-events:none}
-.opanel{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px 10px;align-content:flex-start;padding:4px;overflow:auto;border-right:1px solid rgba(255,255,255,.1)}
+.opanel{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:5px 8px;align-content:flex-start;padding:4px;overflow:hidden;border-right:1px solid rgba(255,255,255,.1)}
 .opanel.r{border-right:0}
 .ogroup{display:flex;gap:1px;padding:2px;border-radius:4px;background:rgba(0,0,0,.2);cursor:pointer;height:max-content}
 .ogroup.pair{outline:1px dashed rgba(255,255,255,.3)}
@@ -240,8 +240,9 @@ body.oland #overlay{position:fixed;inset:0;z-index:40}
 .obottom[hidden]{display:none!important}
 #oinfo{max-width:none;font-size:11px;min-height:1.3em;line-height:1.3}
 .orackrow{display:flex;gap:6px;align-items:stretch}
-.osort{appearance:none;border:0;border-radius:10px;background:linear-gradient(180deg,#fbfcff,#d6dce7);color:#1d2f4d;font:800 10px var(--body);letter-spacing:1px;line-height:1.3;width:48px;flex:none;cursor:pointer;box-shadow:inset 0 1px 0 #fff,0 3px 0 #8e98a9,0 5px 8px rgba(0,0,0,.4)}
-.osort:active{transform:translateY(2px);box-shadow:none}
+.osort{appearance:none;border:0;border-radius:6px;background:rgba(255,255,255,.08);color:#9fb6d3;font:800 9px var(--body);letter-spacing:2px;line-height:1.1;width:22px;flex:none;cursor:pointer;writing-mode:vertical-rl;transform:rotate(180deg);padding:6px 0;border:1px solid rgba(255,255,255,.14)}
+.osort br{display:none}
+.osort:active{background:rgba(255,214,10,.25);color:#fff}
 #orack{flex:1;display:grid;grid-template-columns:repeat(15,calc(var(--th)*.72));justify-content:center;grid-auto-rows:var(--th);gap:4px 1px;background:linear-gradient(180deg,#e2a955 0%,#c07f33 30%,#9a6124 60%,#7a4916 100%),url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='80'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='.01 .3' numOctaves='4' seed='3'/><feColorMatrix values='0 0 0 0 .55 0 0 0 0 .33 0 0 0 0 .12 0 0 0 .35 0'/></filter><rect width='400' height='80' filter='url(%23w)'/></svg>");padding:6px 8px 7px;border-radius:8px;box-shadow:inset 0 3px 10px rgba(0,0,0,.45),inset 0 -2px 0 rgba(255,255,255,.12),0 5px 0 #4a2b0c,0 9px 16px rgba(0,0,0,.5);touch-action:none;position:relative}
 #orack::before{content:"";position:absolute;left:8px;right:8px;top:50%;height:2px;background:rgba(0,0,0,.28);box-shadow:0 1px 0 rgba(255,255,255,.14)}
 .oslot{border-radius:3px;background:rgba(0,0,0,.07);display:flex;align-items:center;justify-content:center;min-width:0}
@@ -249,7 +250,7 @@ body.oland #overlay{position:fixed;inset:0;z-index:40}
 .oslot.meld{box-shadow:inset 0 -4px 0 #3ddc84}
 .oslot.meld .otile{box-shadow:inset 0 1px 0 #fff,inset 0 -2px 0 #cdbf9f,0 3px 0 #2e9e5e,0 4px 8px rgba(0,0,0,.45)}
 .otile.must{outline:3px solid #5aa9ff;outline-offset:-3px}
-.oseat.me{margin-top:auto;flex-direction:column;padding:6px 4px;border-radius:12px;gap:3px;text-align:center;width:100%}
+.oseat.me{margin-top:auto;flex-direction:column;padding:6px 4px;border-radius:12px;gap:3px;text-align:center;width:100%;box-sizing:border-box;max-width:100%}
 .oseat.me .nm{max-width:100%;font-size:9px}
 #oscoreModal{position:absolute;inset:0;z-index:30;background:rgba(3,8,18,.72);display:flex;align-items:center;justify-content:center;padding:16px}
 #oscoreModal[hidden]{display:none!important}
@@ -302,7 +303,7 @@ body.oland #overlay{position:fixed;inset:0;z-index:40}
         <div class="ocol btns" id="obtns"></div>
         <div class="oedge r" id="oedgeR"></div>
       </div>
-      <div id="orackwrap" class="obottom"><div id="oinfo" class="lstatus"></div><div class="orackrow"><button type="button" class="osort" id="osortCift">ÇİFT<br>DİZ</button><div id="orack"></div><button type="button" class="osort" id="osortSeri">SERİ<br>DİZ</button></div></div>
+      <div id="orackwrap" class="obottom"><div id="oinfo" class="lstatus"></div><div class="orackrow"><button type="button" class="osort" id="osortCift" title="Çift diz">ÇİFT</button><div id="orack"></div><button type="button" class="osort" id="osortSeri" title="Seri diz">SERİ</button></div></div>
       <div id="otoast"></div>
       <div id="oscoreModal" hidden></div>
     </div>
@@ -6141,7 +6142,7 @@ function okRender(){const g=Ok.g;if(!g)return;const me=Ok.mySeat,myTurn=g.turn==
   eR.appendChild(okDiscardStack(P(0),g,'br','',myTurn&&g.phase==='play'&&Ok.sel.length===1,()=>{if(myTurn&&g.phase==='play'&&Ok.sel.length===1){okDo({t:'discard',tile:Ok.sel[0]});Ok.sel=[];}}));
   // info column: mode box + indicator + pile
   const ib=el('div','oibox');ib.innerHTML='<span class="dark">'+(Ok.mode==='online'?'ONLİNE':'BOTLAR')+'</span><span>'+({kolay:'KOLAY',normal:'NORMAL',zor:'ZOR'}[level]||'NORMAL')+'</span><span class="red">KATLAMALI</span><span>'+Ok.hand+' / '+Ok.handsTotal+' EL</span>'+(g.players[me].opened?'<span class="ok">AÇILDI</span>':'<span class="gold">EL: '+okBest(g.players[me].hand,g).v+'/101</span>');ic.appendChild(ib);
-  const c=ic;const pile=el('div','opile'+(myTurn&&g.phase==='draw'?' can':''));pile.id='opileEl';if(g.pile.length>2)pile.appendChild(okBackEl());if(g.pile.length>1)pile.appendChild(okBackEl());if(g.pile.length)pile.appendChild(okBackEl());const cnt=el('b',null,g.pile.length);pile.appendChild(cnt);pile.addEventListener('click',()=>{if(myTurn&&g.phase==='draw')okDo({t:'draw'});});
+  const c=ic;const pile=el('div','opile'+(myTurn&&g.phase==='draw'?' can':''));pile.id='opileEl';if(g.pile.length>2)pile.appendChild(okBackEl());if(g.pile.length>1)pile.appendChild(okBackEl());if(g.pile.length)pile.appendChild(okBackEl());else pile.appendChild(el('div','oslotghost'));const cnt=el('b',null,g.pile.length);pile.appendChild(cnt);pile.addEventListener('click',()=>{if(myTurn&&g.phase==='draw')okDo({t:'draw'});});
   const ind=el('div','oindw');ind.appendChild(okTileEl(g.indicator,g,'md'));const ip=el('div','oip');ip.append(ind,pile);c.appendChild(ip);
   // meld panels
   const left=el('div','opanel l'),right=el('div','opanel r');g.table.forEach((grp,gi)=>{const d=el('div','ogroup'+(grp.pair?' pair':''));d.dataset.gi=gi;grp.tiles.forEach(t=>d.appendChild(okTileEl(t,g,'md')));
@@ -6150,6 +6151,8 @@ function okRender(){const g=Ok.g;if(!g)return;const me=Ok.mySeat,myTurn=g.turn==
       if(!okAddToGroup(grp,t,g)&&grp.tiles.some(x=>okIdent(x,g).wild)&&!okIdent(t,g).wild)okDo({t:'swapokey',tile:id,group:gi});else okDo({t:'lay',tile:id,group:gi});Ok.sel=[];});
     (gi%2?right:left).appendChild(d);});
   felt.append(left,right);
+  // açılan gruplar ekrana sığsın: taşı küçülterek dene
+  okFitPanels(felt,left,right);
   // status line
   const p=g.players[me];let info='';
   if(g.over)info='El bitti.';else if(!myTurn)info='<b>'+g.players[g.turn].name+'</b> oynuyor…';else if(g.phase==='draw')info='<b>Sıra sende:</b> ortadan çek ya da soldaki taşı al.';else if(!myTurn)info='';
@@ -6178,6 +6181,8 @@ function okRender(){const g=Ok.g;if(!g)return;const me=Ok.mySeat,myTurn=g.turn==
   orack.innerHTML='';const hand=okMyHand();const meldIds=new Set(okMeldBlocks().flatMap(b=>b.ids));Ok.rack.forEach((id,i)=>{const slot=el('div','oslot');slot.dataset.i=i;const t=id!=null?hand.find(x=>x.id===id):null;if(t){const te=okTileEl(t,g);if(Ok.sel.includes(t.id))te.classList.add('sel');if(meldIds.has(t.id))slot.classList.add('meld');if(g.mustUse===t.id&&!p.opened)te.classList.add('must');slot.appendChild(te);}orack.appendChild(slot);});
   const meTag=okSeatTag(p,me,g,'me');obtns.appendChild(meTag);
   okUpdateHud();}
+function okFitPanels(felt,left,right){felt.style.removeProperty('--tm');const fits=()=>left.scrollHeight<=left.clientHeight+1&&right.scrollHeight<=right.clientHeight+1;if(fits())return;
+  let tm=parseFloat(getComputedStyle(left.querySelector('.otile')||felt).height)||40;for(let i=0;i<10&&tm>16;i++){tm=Math.floor(tm*0.88);felt.style.setProperty('--tm',tm+'px');if(fits())break;}}
 function okUpdateHud(){const g=Ok.g;$('ohand').textContent='EL '+Ok.hand;$('ookey').innerHTML='';if(g){const o=okTileEl({id:-1,c:g.okey.c,n:g.okey.n,fake:false},null,'sm');o.classList.add('wild');$('ookey').appendChild(o);}$('oscore').textContent=Ok.totals[Ok.mySeat];
   const sb=$('oscores');sb.innerHTML='';if(g){g.players.forEach((p,i)=>{const r=el('div','row'+(i===Ok.mySeat?' me':''));r.innerHTML='<span>'+p.name+'</span><b>'+Ok.totals[i]+(p.pen?' <i>+'+p.pen+'</i>':'')+'</b>';sb.appendChild(r);});}}
 // rack: 2 rows x 13; tap = select, drag = move
