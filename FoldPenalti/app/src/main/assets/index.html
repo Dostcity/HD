@@ -74,7 +74,18 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);overf
 #lingo[hidden]{display:none!important}
 .lhud{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:520px;font-family:var(--display);font-size:clamp(18px,4.5vw,28px);letter-spacing:1px}
 .lhud .lp{display:flex;align-items:center;gap:10px;padding:6px 12px;border-radius:10px;background:rgba(255,255,255,.05);border:2px solid transparent;min-width:0}
-.lhud .lp.turn{border-color:var(--accent);box-shadow:0 0 18px rgba(255,214,10,.25)}
+.lhud .lp.turn{border-color:var(--accent);background:rgba(255,214,10,.16);box-shadow:0 0 22px rgba(255,214,10,.35);transform:scale(1.05)}
+.lturn{width:100%;max-width:520px;text-align:center;border-radius:12px;padding:10px 14px;font:800 15px var(--body);letter-spacing:2px;text-transform:uppercase;border:2px solid transparent}
+.lturn[hidden]{display:none!important}
+.lturn b{color:inherit}
+.lturn.me{background:rgba(61,220,132,.18);border-color:var(--good);color:var(--good);animation:turnpulse 1s infinite alternate}
+.lturn.them{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15);color:var(--muted)}
+.lturn.p0{background:rgba(255,214,10,.16);border-color:var(--accent);color:var(--accent);animation:turnpulse 1s infinite alternate}
+.lturn.p1{background:rgba(80,160,255,.16);border-color:#5aa9ff;color:#9fd0ff;animation:turnpulse 1s infinite alternate}
+@keyframes turnpulse{from{box-shadow:0 0 0 0 rgba(255,255,255,.0)}to{box-shadow:0 0 22px 2px rgba(255,255,255,.18)}}
+#lkbwrap{position:relative}
+#lkbwrap.wait #lkb{opacity:.3;pointer-events:none;filter:grayscale(1)}
+#lkbwrap.wait::after{content:"RAKİBİN SIRASI · BEKLE";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:800 16px var(--body);letter-spacing:3px;color:var(--muted);background:rgba(6,10,20,.85);padding:10px 18px;border-radius:12px;border:1px solid rgba(255,255,255,.12)}
 .lhud .lname{color:var(--muted);font-size:.7em;letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:10ch}
 .lhud .lp b{background:var(--accent);color:#1a1400;padding:2px 10px 0;border-radius:6px;font-size:1.1em}
 .lhud .lmid{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);font-size:.6em;letter-spacing:2px}
@@ -278,6 +289,7 @@ body.oland #overlay{position:fixed;inset:0;z-index:40}
         <div class="lmid"><span id="lround">1/5 · 5 HARF</span><span id="ltimer">30</span></div>
         <div class="lp r"><b id="lscoreR">0</b><span class="lname" id="lnameR">RAKİP</span></div>
       </div>
+      <div id="lturn" class="lturn" hidden></div>
       <div id="lboard"></div>
       <div id="lstatus" class="lstatus"></div>
     </div>
@@ -5727,7 +5739,12 @@ function setStatus(html,cls){lstatus.innerHTML=html;lstatus.className='lstatus '
 function updateHud(){lscoreL.textContent=Lg.players[0].score;lscoreR.textContent=Lg.players[1].score;lnameL.textContent=Lg.players[0].name;lnameR.textContent=Lg.players[1].name;
   const duel=Lg.mode!=='solo';lscoreR.parentElement.style.display=duel?'':'none';
   lround.textContent=(Lg.round+1)+'/'+Lg.wordsPerGame+' · '+Lg.len+' HARF';
-  lnameL.parentElement.classList.toggle('turn',duel&&Lg.turn===0&&Lg.phase==='play');lnameR.parentElement.classList.toggle('turn',duel&&Lg.turn===1&&Lg.phase==='play');}
+  lnameL.parentElement.classList.toggle('turn',duel&&Lg.turn===0&&Lg.phase==='play');lnameR.parentElement.classList.toggle('turn',duel&&Lg.turn===1&&Lg.phase==='play');
+  const lt=$('lturn');const playing=duel&&Lg.phase==='play';lt.hidden=!playing;
+  if(playing){const mine=Lg.mode==='duel'?true:myTurn();const nm=TR_UP(Lg.players[Lg.turn].name);
+    lt.className='lturn '+(Lg.mode==='duel'?('p'+Lg.turn):(mine?'me':'them'));
+    lt.innerHTML=Lg.mode==='duel'?'▶ SIRA: <b>'+nm+'</b>':(mine?'▶ SIRA SENDE · YAZ!':'⏳ <b>'+nm+'</b> OYNUYOR…');}
+  $('lkbwrap').classList.toggle('wait',Lg.mode==='online'&&Lg.phase==='play'&&!myTurn());}
 function turnText(){if(Lg.mode==='solo')return '';if(Lg.mode==='duel')return 'Sıra: <b>'+Lg.players[Lg.turn].name+'</b>. ';return myTurn()?'<b>Sıra sende.</b> ':'<b>'+Lg.players[Lg.turn].name+'</b> düşünüyor… ';}
 function myTurn(){if(Lg.mode==='solo')return true;if(Lg.mode==='duel')return true;return Lg.turn===(Lg.role==='host'?0:1);}
 function startWord(w){Lg.word=w;Lg.len=w.length;Lg.rows=[];Lg.cur='';Lg.attempt=0;Lg.maxAttempts=LL().guesses;Lg.known=Array(w.length).fill('');Lg.known[0]=w[0];Lg.phase='play';Lg.busy=false;
@@ -5775,7 +5792,7 @@ function endGame(){Lg.phase='over';stopTimer();const me=Lg.players[0].score,op=L
   if(Lg.mode==='online')netState();
   setTimeout(()=>{showStep(Lg.mode==='online'&&Lg.role==='guest'?'ltype':'lsetup',{title:title+'<span>'+sub+'</span>',text:Lg.mode==='online'?(Lg.role==='host'?'Aynı odada yeniden oynamak için Başla.':'Oda sahibi yeniden başlatabilir.'):'Tekrar oynamak için Başla.'});$('overlay').hidden=false;},1200);}
 function lingoNewGame(){try{Lg.best=+(localStorage.getItem('lingoBest_'+level)||0)}catch(e){}
-  Lg.round=0;Lg.history=[];Lg.turn=0;Lg.players[0].score=0;Lg.players[1].score=0;
+  Lg.round=0;Lg.history=[];Lg.turn=0;Lg.cur='';Lg.rows=[];Lg.attempt=0;Lg.players[0].score=0;Lg.players[1].score=0;
   Lg.players[0].name=Lg.mode==='solo'?(playerName||'SEN'):(Lg.mode==='duel'?($('lp1').value.trim()||'1. OYUNCU'):(Lg.role==='host'?(playerName||'SEN'):(Lg.peerName||'RAKİP')));
   Lg.players[1].name=Lg.mode==='duel'?($('lp2').value.trim()||'2. OYUNCU'):(Lg.role==='host'?(Lg.peerName||'RAKİP'):(playerName||'SEN'));
   lingoShow(true);buildKeyboard();
@@ -5786,7 +5803,7 @@ const BROKERS=['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mq
 function topic(){return 'foldarena/lingo/v1/'+Lg.code;}
 function netSend(m){if(!Lg.net||!Lg.connected)return;m.from=Lg.myId;try{Lg.net.publish(topic(),JSON.stringify(m),{qos:1});}catch(e){}}
 function netState(){if(Lg.role!=='host')return;netSend({t:'state',s:{round:Lg.round,word:Lg.word,rows:Lg.rows,attempt:Lg.attempt,maxAttempts:Lg.maxAttempts,turn:Lg.turn,players:Lg.players,known:Lg.known,phase:Lg.phase,len:Lg.len,wordsPerGame:Lg.wordsPerGame}});}
-function applyState(s){const prevTurn=Lg.turn,prevPhase=Lg.phase,prevRound=Lg.round;Object.assign(Lg,{round:s.round,word:s.word,rows:s.rows,attempt:s.attempt,maxAttempts:s.maxAttempts,turn:s.turn,known:s.known,phase:s.phase,len:s.len,wordsPerGame:s.wordsPerGame});
+function applyState(s){const prevTurn=Lg.turn,prevPhase=Lg.phase,prevRound=Lg.round,prevAttempt=Lg.attempt;if(s.round!==prevRound||s.turn!==prevTurn||s.phase!==prevPhase||s.attempt!==prevAttempt)Lg.cur='';Object.assign(Lg,{round:s.round,word:s.word,rows:s.rows,attempt:s.attempt,maxAttempts:s.maxAttempts,turn:s.turn,known:s.known,phase:s.phase,len:s.len,wordsPerGame:s.wordsPerGame});
   Lg.players[0].score=s.players[0].score;Lg.players[1].score=s.players[1].score;Lg.players[0].name=s.players[0].name;Lg.players[1].name=s.players[1].name;Lg.busy=false;if(Lg.cur.length>Lg.len)Lg.cur='';
   renderBoard();updateHud();if(s.phase==='play'&&(s.turn!==prevTurn||prevPhase!=='play'||s.round!==prevRound))turnBanner();
   if(s.phase==='play')setStatus(turnText()+'İlk harf '+TR_UP(s.word[0])+'. Kalan hak: '+(s.maxAttempts-s.attempt));
